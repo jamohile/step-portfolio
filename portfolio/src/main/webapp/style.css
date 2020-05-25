@@ -26,11 +26,36 @@ header > #wordmark{
     font-size: 30px;
     color: black;
     font-weight: 600;
+    animation: wordmark-entry 1s forwards ease-out;
 }
+
+@keyframes wordmark-entry{
+    from {
+        margin-left: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-left: 0px;
+        opacity: 1;
+    }
+}
+
 
 header > nav {
     display: flex;
     flex-direction: row;
+    animation: nav-entry 1s forwards ease-out;
+}
+
+@keyframes nav-entry{
+    from {
+        margin-right: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-right: 0px;
+        opacity: 1;
+    }
 }
 
 header > nav > a{
@@ -83,12 +108,27 @@ main#landing{
 
 main#landing > #hero{
     position: relative;
-    bottom: -60px;
 
     height: 70vh;
     width: auto;
     object-fit: contain;
+    animation: hero-entry 1s 1s forwards ease-out;
+
+    opacity: 0;
 }
+
+@keyframes hero-entry{
+    from {
+        bottom: -120px;
+        opacity: 0;
+    }
+    to {
+        bottom: -65px;
+        opacity: 1;
+    }
+}
+
+
 
 main#landing > #watermark{
     position: absolute;
@@ -101,6 +141,19 @@ main#landing > #watermark{
     font-family: Montserrat;
     font-size: 12.5vh;
     line-height: 10vh;
-    opacity: 0.1;
+    color: #e6e6e6;
     font-weight: 600;
+
+    animation: watermark-entry 1.4s forwards ease-out;
+}
+
+@keyframes watermark-entry{
+    from {
+        margin-bottom: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-bottom: 0px;
+        opacity: 1;
+    }
 }
