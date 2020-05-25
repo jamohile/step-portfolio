@@ -1,5 +1,15 @@
-body {
+html {
+    height: 100%;
+    width: 100%;
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
 }
 
 header {
@@ -8,7 +18,7 @@ header {
     justify-content: space-between;
     align-items: center;
 
-    margin: 60px;
+    margin: 60px
 }
 
 header > #wordmark{
@@ -53,4 +63,12 @@ header > nav > a > .title {
     font-size: 24px;
     color: black;
     font-weight: 500;
+}
+
+main {
+    height: 0;
+    flex-grow: 1;
+
+    padding: 60px;
+    padding-top: 0px;
 }
