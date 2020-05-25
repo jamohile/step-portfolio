@@ -72,3 +72,35 @@ main {
     padding: 60px;
     padding-top: 0px;
 }
+
+main#landing{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+main#landing > #hero{
+    position: relative;
+    bottom: -60px;
+
+    height: 70vh;
+    width: auto;
+    object-fit: contain;
+}
+
+main#landing > #watermark{
+    position: absolute;
+    left: calc(100% - 60px);
+    bottom: 60px;
+
+    transform: rotate(-90deg);
+    transform-origin: bottom left;
+
+    font-family: Montserrat;
+    font-size: 12.5vh;
+    line-height: 10vh;
+    opacity: 0.1;
+    font-weight: 600;
+}
