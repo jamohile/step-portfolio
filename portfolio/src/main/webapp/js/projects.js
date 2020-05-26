@@ -1,10 +1,12 @@
-const tagNames = ["Personal", "Google", "JS", "C++"];
-const tagTemplate = document.querySelector("#tag-template");
-const tagContainer = document.querySelector("#tags-list");
+const tagNames = ["Personal", "Google", "JS", "C++", "Work", "Python"];
+const projectObjects = [
+    {name: "Recall", description: "Hospital Scheduling", tags: ["Personal", "JS"]},
+    {name: "Vectorly", description: "3D Math Calculator", tags: ["Personal", "JS"]},
+    {name: "Houndify React Native", description: "Official React Native port of Houndify SDK", tags: ["Work", "JS"]},
+    {name: "Parlex", description: "Language agnostic zero-dependency AST parser", tags: ["Personal", "C++"]},
+    {name: "StereoCloud", description: "Stereoscopic image to point cloud generation", tags: ["Personal", "Python"]}
+];
 
-const projectObjects = [{name: "Recall", description: "Hospital Scheduling", tags: ["Personal"]}];
-const projectTemplate = document.querySelector("#project-template");
-const projectContainer = document.querySelector("#projects-list");
 
 /**
  * Tags help group projects.
@@ -15,13 +17,17 @@ const projectContainer = document.querySelector("#projects-list");
 class Tag {
     /** All tags currently being displayed, by name. */
     static tags = new Map();
+    /** Template element */
+    static template = document.querySelector("#tag-template");
+    /** UI to hold individual all tags */
+    static container = document.querySelector("#tags-list");
 
     /**
      * @param {string} name
      */
     constructor(name){
         /** Get root HTML node */
-        this.node = tagTemplate.content.cloneNode(true).querySelector(".tag");
+        this.node = Tag.template.content.cloneNode(true).querySelector(".tag");
 
         /** @private @const {string} */
         this.name = name;
@@ -33,7 +39,7 @@ class Tag {
         this.render();
         
         /** Add to UI */
-        tagContainer.appendChild(this.node);
+        Tag.container.appendChild(this.node);
     }
 
     /**
@@ -65,7 +71,7 @@ class Tag {
 
     /** Add all tags to the UI, replacing all existing. */
     static populateAll(){
-        tagContainer.innerHTML = "";
+        Tag.container.innerHTML = "";
         Tag.tags.clear();
 
         for(let tagName of tagNames){
@@ -82,6 +88,10 @@ class Tag {
 class Project {
     /** All projects currently being displayed, by name. */
     static projects = new Map();
+    /** Template element */
+    static template = document.querySelector("#project-template");
+    /** UI to hold individual all projects */
+    static container = document.querySelector("#projects-list");
 
     /**
      * @param {string} name
@@ -90,7 +100,7 @@ class Project {
      */
     constructor(name, description, tags){
         /** Get root HTML node */
-        this.node = projectTemplate.content.cloneNode(true).querySelector(".project");
+        this.node = Project.template.content.cloneNode(true).querySelector(".project");
 
         /** @private @const {string} */
         this.name = name;
@@ -102,7 +112,7 @@ class Project {
         this.render();
         
         /** Add to UI */
-        projectContainer.appendChild(this.node);
+        Project.container.appendChild(this.node);
     }
 
     /**
@@ -128,7 +138,7 @@ class Project {
 
     /** Add all projects to the UI, replacing all existing. */
     static populateAll(){
-        projectContainer.innerHTML = "";
+        Project.container.innerHTML = "";
         Project.projects.clear();
 
         const tagsMap = Tag.tags;
@@ -152,5 +162,8 @@ class Project {
 /** Initially add all tags to screen, unselected. */
 Tag.populateAll();
 
-/** Add all projects to screen. */
+/**  
+ * Add all projects to screen.
+ * This must come after tag population since projects filter based on tags.
+ */
 Project.populateAll();

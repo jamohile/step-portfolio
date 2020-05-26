@@ -208,6 +208,7 @@ main#projects > #projects-list > .project > .tags {
 
 main#projects > #projects-list > .project > .tags > .tag {
     padding: 4px 12px;
+    margin-right: 8px;
     border-radius: 20px;
 
     font-family: Montserrat;
