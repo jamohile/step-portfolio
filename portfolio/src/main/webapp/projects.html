@@ -24,7 +24,9 @@
     </header>
 
     <main id="projects">
+        <!-- A list of all projects matching selected tag-filters -->
         <div id="projects-list">
+            <!-- Used to instantiate new project elements -->
             <template id="project-template">
                 <div class="project">
                     <div class="name">Project Name</div>
@@ -37,7 +39,10 @@
                 </div>
             </template>
         </div>
+
+        <!-- A list of interactive tags used to filter -->
         <div id="tags-list">
+            <!-- Used to instantiate new tag elements -->
             <template id="tag-template">
                 <div class="tag">Personal</div>
             </template>
@@ -45,6 +50,7 @@
         <div id="watermark">Projects.</div>
     </main>
 
+    <!-- This must be included at the end, to allow above templates to be added to dom. -->
     <script src="js/projects.js"></script>
   </body>
 </html>
