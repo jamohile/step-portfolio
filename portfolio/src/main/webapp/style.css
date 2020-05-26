@@ -98,23 +98,16 @@ main {
     padding-top: 0px;
 }
 
-main#landing{
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-end;
-}
-
 main#landing > #hero{
-    position: relative;
+    position: absolute;
 
     height: 70vh;
     width: auto;
     object-fit: contain;
-    animation: hero-entry 1s 1s forwards ease-out;
+    animation: hero-entry 1s 0.4s forwards ease-out;
 
     opacity: 0;
+    z-index: 100;
 }
 
 @keyframes hero-entry{
@@ -123,7 +116,7 @@ main#landing > #hero{
         opacity: 0;
     }
     to {
-        bottom: -65px;
+        bottom: -20px;
         opacity: 1;
     }
 }
@@ -144,16 +137,28 @@ main#landing > #watermark{
     color: #e6e6e6;
     font-weight: 600;
 
-    animation: watermark-entry 1.4s forwards ease-out;
+    animation: watermark-entry 1.8s forwards ease-out;
+    z-index: 50;
 }
 
 @keyframes watermark-entry{
     from {
-        margin-bottom: -60px;
+        margin-bottom: -120px;
         opacity: 0;
     }
     to {
         margin-bottom: 0px;
         opacity: 1;
     }
+}
+
+main#landing > #accent {
+    position: absolute;
+    left: 60px;
+    bottom: 60px;
+
+    width: 25px;
+    height: 10px;
+    border-radius: 5px;
+    background: #4CE2B5;
 }
