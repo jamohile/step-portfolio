@@ -1,9 +1,159 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+html {
+    height: 100%;
+    width: 100%;
 }
 
-#greeting-container {
-  margin-top: 20px;
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 60px
+}
+
+header > #wordmark{
+    font-family: Montserrat;
+    font-size: 30px;
+    color: black;
+    font-weight: 600;
+    animation: wordmark-entry 1s forwards ease-out;
+}
+
+@keyframes wordmark-entry{
+    from {
+        margin-left: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-left: 0px;
+        opacity: 1;
+    }
+}
+
+
+header > nav {
+    display: flex;
+    flex-direction: row;
+    animation: nav-entry 1s forwards ease-out;
+}
+
+@keyframes nav-entry{
+    from {
+        margin-right: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-right: 0px;
+        opacity: 1;
+    }
+}
+
+header > nav > a{
+    position: relative;
+
+    text-decoration: none;
+
+    margin-left: 30px;
+}
+
+header > nav > a > .hover-indicator{
+    position: absolute;
+    left: 2px;
+    top: -2px;
+    height: 2px;
+    width: 0px;
+    border-radius: 1px;
+
+    background: #4CE2B5;
+
+    transition: width 0.2s;
+}
+
+header > nav > a:hover > .hover-indicator{
+    width: 20px;
+}
+
+header > nav > a > .title {
+    font-family: Montserrat;
+    font-size: 24px;
+    color: black;
+    font-weight: 500;
+}
+
+main {
+    height: 0;
+    flex-grow: 1;
+
+    padding: 60px;
+    padding-top: 0px;
+}
+
+main#landing{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+main#landing > #hero{
+    position: relative;
+
+    height: 70vh;
+    width: auto;
+    object-fit: contain;
+    animation: hero-entry 1s 1s forwards ease-out;
+
+    opacity: 0;
+}
+
+@keyframes hero-entry{
+    from {
+        bottom: -120px;
+        opacity: 0;
+    }
+    to {
+        bottom: -65px;
+        opacity: 1;
+    }
+}
+
+
+
+main#landing > #watermark{
+    position: absolute;
+    left: calc(100% - 60px);
+    bottom: 60px;
+
+    transform: rotate(-90deg);
+    transform-origin: bottom left;
+
+    font-family: Montserrat;
+    font-size: 12.5vh;
+    line-height: 10vh;
+    color: #e6e6e6;
+    font-weight: 600;
+
+    animation: watermark-entry 1.4s forwards ease-out;
+}
+
+@keyframes watermark-entry{
+    from {
+        margin-bottom: -60px;
+        opacity: 0;
+    }
+    to {
+        margin-bottom: 0px;
+        opacity: 1;
+    }
 }
