@@ -130,7 +130,7 @@ main#landing > #hero{
 
 
 
-main#landing > #watermark{
+main > #watermark{
     position: absolute;
     left: calc(100% - 60px);
     bottom: 60px;
@@ -156,4 +156,42 @@ main#landing > #watermark{
         margin-bottom: 0px;
         opacity: 1;
     }
+}
+
+main#personal > #bio {
+    width: 50%;
+    min-width: 600px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+main#personal > #bio h1 {
+    font-family: Montserrat;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+main#personal > #bio h2 {
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 600;
+
+    margin-top: 48px;
+}
+
+main#personal > #bio p, main#personal > #bio li {
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+main#personal > #bio p a {
+    background: #4CE2B5;
+    color: black;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 3px 8px;
+    margin: 4px;
+    border-radius: 32px;
 }
