@@ -132,6 +132,10 @@ class Project {
         for(let tagName of this.tags){
             const tagNode = tagTemplate.content.cloneNode(true).querySelector(".tag");
             tagNode.innerHTML = tagName;
+            /* Add style to indicate that this tag is part of filtered tags if applicable */
+            if (Tag.tags.get(tagName).selected === true){
+                tagNode.classList.add("selected");
+            }
             tagsContainer.appendChild(tagNode);
         }
     }

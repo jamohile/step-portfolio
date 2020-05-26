@@ -199,6 +199,7 @@ main#projects > #projects-list > .project > .description {
     color: #787878;
 
     margin-top: 8px;
+    width: 80%;
 }
 
 main#projects > #projects-list > .project > .tags {
@@ -221,6 +222,11 @@ main#projects > #projects-list > .project > .tags > .tag {
 
     background: #c4c4c4;
 }
+
+main#projects > #projects-list > .project > .tags > .tag.selected {
+    background: #4CE2B5;
+}
+
 
 main#projects > #tags-list {
     width: 85%;
@@ -250,6 +256,10 @@ main#projects > #tags-list > .tag {
 
     background: #C4C4C4;
     user-select: none;
+}
+
+main#projects > #tags-list > .tag:hover {
+    cursor: pointer;
 }
 
 main#projects > #tags-list > .tag.selected {
