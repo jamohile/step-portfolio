@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Jay Mohile</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
   </head>
@@ -25,10 +25,16 @@
 
     <main id="projects">
         <div id="projects-list">
+
         </div>
         <div id="tags-list">
+            <template id="tag-template">
+                <div class="tag">Personal</div>
+            </template>
         </div>
         <div id="watermark">Projects.</div>
     </main>
+
+    <script src="js/projects.js"></script>
   </body>
 </html>

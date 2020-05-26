@@ -245,6 +245,7 @@ main#projects > #tags-list > .tag {
     color: white;
 
     background: #C4C4C4;
+    user-select: none;
 }
 
 main#projects > #tags-list > .tag.selected {
