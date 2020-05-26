@@ -58,6 +58,9 @@ class Tag {
     toggleSelected(){
         this.selected = !this.selected;
         this.render();
+
+        /** Rerender projects if tag selection is changed */
+        Project.populateAll();
     }
 
     /** Add all tags to the UI, replacing all existing. */
@@ -70,6 +73,11 @@ class Tag {
         }
     }
 }
+
+/**
+ * A project is a single portfolio item.
+ * The Project class handles displaying projects while applying necessary filters.
+ */
 
 class Project {
     /** All projects currently being displayed, by name. */
@@ -123,14 +131,26 @@ class Project {
         projectContainer.innerHTML = "";
         Project.projects.clear();
 
+        const tagsMap = Tag.tags;
+        const noTagsSelected = ![...tagsMap.values()].some(tag => tag.selected === true);
+
         for(let {name, description, tags} of projectObjects){
-            Project.projects.set(name, new Project(name, description, tags));
+            /**
+             * Display a project if either
+                (1) no tags selected, or
+                (2) project contains any selected tag (logical OR)
+             */
+             /** Naively check tag membership right now, efficiency not a big problem. */
+             const tagIncluded = tags.some(tag => tagsMap.get(tag).selected === true);
+            if (noTagsSelected || tagIncluded){
+                Project.projects.set(name, new Project(name, description, tags));
+            }
         }
     }
 }
 
-/** Add all projects to screen. */
-Project.populateAll();
-
 /** Initially add all tags to screen, unselected. */
 Tag.populateAll();
+
+/** Add all projects to screen. */
+Project.populateAll();
