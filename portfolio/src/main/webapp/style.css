@@ -98,32 +98,7 @@ main {
     padding-top: 0px;
 }
 
-main#landing > #hero{
-    position: absolute;
-
-    height: 70vh;
-    width: auto;
-    object-fit: contain;
-    animation: hero-entry 1s 0.4s forwards ease-out;
-
-    opacity: 0;
-    z-index: 100;
-}
-
-@keyframes hero-entry{
-    from {
-        bottom: -120px;
-        opacity: 0;
-    }
-    to {
-        bottom: -20px;
-        opacity: 1;
-    }
-}
-
-
-
-main#landing > #watermark{
+main > #watermark{
     position: absolute;
     left: calc(100% - 60px);
     bottom: 60px;
@@ -161,4 +136,27 @@ main#landing > #accent {
     height: 10px;
     border-radius: 5px;
     background: #4CE2B5;
+}
+
+main#landing > #hero{
+    position: absolute;
+
+    height: 70vh;
+    width: auto;
+    object-fit: contain;
+    animation: hero-entry 1s 0.4s forwards ease-out;
+
+    opacity: 0;
+    z-index: 100;
+}
+
+@keyframes hero-entry{
+    from {
+        bottom: -120px;
+        opacity: 0;
+    }
+    to {
+        bottom: -20px;
+        opacity: 1;
+    }
 }
