@@ -136,6 +136,9 @@ class Project {
             if (Tag.tags.get(tagName).selected === true){
                 tagNode.classList.add("selected");
             }
+
+            tagNode.addEventListener("click", () => Tag.tags.get(tagName).toggleSelected());
+
             tagsContainer.appendChild(tagNode);
         }
     }

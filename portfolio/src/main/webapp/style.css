@@ -223,6 +223,10 @@ main#projects > #projects-list > .project > .tags > .tag {
     background: #c4c4c4;
 }
 
+main#projects > #projects-list > .project > .tags > .tag:hover {
+    cursor: pointer;
+}
+
 main#projects > #projects-list > .project > .tags > .tag.selected {
     background: #4CE2B5;
 }
