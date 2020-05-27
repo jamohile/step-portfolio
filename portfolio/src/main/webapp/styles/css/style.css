@@ -1,92 +1,72 @@
 html {
   height: 100%;
-  width: 100%;
-}
+  width: 100%; }
 
 body {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  margin: 0;
-}
+  margin: 0; }
 
 header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin: 60px;
-}
+  margin: 60px; }
+  header > #wordmark {
+    font-family: Montserrat;
+    font-size: 30px;
+    color: black;
+    font-weight: 600;
+    animation: entry 1s forwards ease-out; }
 
-header > #wordmark {
-  font-family: Montserrat;
-  font-size: 30px;
-  color: black;
-  font-weight: 600;
-  animation: wordmark-entry 1s forwards ease-out;
-}
-
-@keyframes wordmark-entry {
+@keyframes entry {
   from {
     margin-left: -60px;
-    opacity: 0;
-  }
+    opacity: 0; }
   to {
     margin-left: 0px;
-    opacity: 1;
-  }
-}
-header > nav {
-  display: flex;
-  flex-direction: row;
-  animation: nav-entry 1s forwards ease-out;
-}
+    opacity: 1; } }
+  header > nav {
+    display: flex;
+    flex-direction: row;
+    animation: entry 1s forwards ease-out; }
 
-@keyframes nav-entry {
+@keyframes entry {
   from {
     margin-right: -60px;
-    opacity: 0;
-  }
+    opacity: 0; }
   to {
     margin-right: 0px;
-    opacity: 1;
-  }
-}
-header > nav > a {
-  position: relative;
-  text-decoration: none;
-  margin-left: 30px;
-}
-
-header > nav > a > .hover-indicator {
-  position: absolute;
-  left: 2px;
-  top: -2px;
-  height: 2px;
-  width: 0px;
-  border-radius: 1px;
-  background: #4CE2B5;
-  transition: width 0.2s;
-}
-
-header > nav > a:hover > .hover-indicator {
-  width: 20px;
-}
-
-header > nav > a > .title {
-  font-family: Montserrat;
-  font-size: 24px;
-  color: black;
-  font-weight: 500;
-}
+    opacity: 1; } }
+    header > nav > a {
+      position: relative;
+      text-decoration: none;
+      margin-left: 30px; }
+      header > nav > a > .hover-indicator {
+        position: absolute;
+        left: 2px;
+        top: -2px;
+        height: 2px;
+        width: 0px;
+        border-radius: 1px;
+        background: #4CE2B5;
+        transition: width 0.2s; }
+      header > nav > a:hover > .hover-indicator {
+        width: 20px; }
+      header > nav > a > .title {
+        font-family: Montserrat;
+        font-size: 24px;
+        color: black;
+        font-weight: 500; }
 
 main {
   height: 0;
   flex-grow: 1;
   padding: 60px;
-  padding-top: 0px;
-}
+  padding-top: 0px; }
 
 main > #watermark {
   position: absolute;
@@ -100,19 +80,16 @@ main > #watermark {
   color: #e6e6e6;
   font-weight: 600;
   animation: watermark-entry 1.8s forwards ease-out;
-  z-index: 50;
-}
+  z-index: 50; }
 
 @keyframes watermark-entry {
   from {
     margin-bottom: -120px;
-    opacity: 0;
-  }
+    opacity: 0; }
   to {
     margin-bottom: 0px;
-    opacity: 1;
-  }
-}
+    opacity: 1; } }
+
 main#landing > #accent {
   position: absolute;
   left: 60px;
@@ -120,8 +97,7 @@ main#landing > #accent {
   width: 25px;
   height: 10px;
   border-radius: 5px;
-  background: #4CE2B5;
-}
+  background: #4CE2B5; }
 
 main#landing > #hero {
   position: absolute;
@@ -132,23 +108,19 @@ main#landing > #hero {
   object-fit: contain;
   animation: hero-entry 1s 0.4s forwards ease-out;
   opacity: 0;
-  z-index: 100;
-}
+  z-index: 100; }
 
 @keyframes hero-entry {
   from {
     bottom: -120px;
-    opacity: 0;
-  }
+    opacity: 0; }
   to {
     bottom: -20px;
-    opacity: 1;
-  }
-}
+    opacity: 1; } }
+
 main#projects {
   display: flex;
-  flex-direction: column;
-}
+  flex-direction: column; }
 
 main#projects > #projects-list {
   width: 85%;
@@ -157,20 +129,17 @@ main#projects > #projects-list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: flex-start;
-}
+  align-content: flex-start; }
 
 main#projects > #projects-list > .project {
   flex-basis: 250px;
-  margin-bottom: 64px;
-}
+  margin-bottom: 64px; }
 
 main#projects > #projects-list > .project > .name {
   font-family: Montserrat;
   font-size: 24px;
   font-weight: 600;
-  color: black;
-}
+  color: black; }
 
 main#projects > #projects-list > .project > .description {
   font-family: Montserrat;
@@ -178,15 +147,13 @@ main#projects > #projects-list > .project > .description {
   font-weight: 500;
   color: #787878;
   margin-top: 8px;
-  width: 80%;
-}
+  width: 80%; }
 
 main#projects > #projects-list > .project > .tags {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 16px;
-}
+  margin-top: 16px; }
 
 main#projects > #projects-list > .project > .tags > .tag {
   padding: 4px 12px;
@@ -196,24 +163,20 @@ main#projects > #projects-list > .project > .tags > .tag {
   font-weight: 500;
   font-size: 12px;
   color: black;
-  background: #e0f4ee;
-}
+  background: #e0f4ee; }
 
 main#projects > #projects-list > .project > .tags > .tag:hover {
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 main#projects > #projects-list > .project > .tags > .tag.selected {
-  background: #4CE2B5;
-}
+  background: #4CE2B5; }
 
 main#projects > #tags-list {
   width: 85%;
   height: 36px;
   margin-top: 24px;
   display: flex;
-  flex-direction: row;
-}
+  flex-direction: row; }
 
 main#projects > #tags-list > .tag {
   height: 36px;
@@ -229,43 +192,36 @@ main#projects > #tags-list > .tag {
   font-size: 16px;
   color: white;
   background: #C4C4C4;
-  user-select: none;
-}
+  user-select: none; }
 
 main#projects > #tags-list > .tag:hover {
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 main#projects > #tags-list > .tag.selected {
-  background: #4CE2B5;
-}
+  background: #4CE2B5; }
 
 main#personal > #bio {
   width: 50%;
   min-width: 600px;
   height: 100%;
-  overflow-y: auto;
-}
+  overflow-y: auto; }
 
 main#personal > #bio h1 {
   font-family: Montserrat;
   font-size: 30px;
-  font-weight: 600;
-}
+  font-weight: 600; }
 
 main#personal > #bio h2 {
   font-family: Montserrat;
   font-size: 16px;
   font-weight: 600;
-  margin-top: 48px;
-}
+  margin-top: 48px; }
 
 main#personal > #bio p, main#personal > #bio li {
   font-family: Montserrat;
   font-size: 16px;
   font-weight: 500;
-  line-height: 24px;
-}
+  line-height: 24px; }
 
 main#personal > #bio p a {
   background: #4CE2B5;
@@ -274,7 +230,4 @@ main#personal > #bio p a {
   font-weight: 600;
   padding: 3px 8px;
   margin: 4px;
-  border-radius: 32px;
-}
-
-/*# sourceMappingURL=style.css.map */
+  border-radius: 32px; }
