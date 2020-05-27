@@ -27,3 +27,18 @@ for(let detail of project.detail){
     detailNode.innerHTML = detail;
     detailListNode.appendChild(detailNode);
 }
+
+/**
+ * A simple example of loading data from the server.
+ * This is a proof-of-concept, and will be replaced by a more complicated and useful method.
+ */
+async function loadServerMessage(){
+    /** For now we espect to get response <h1>Hello Jay!</h1>*/
+    const response = await fetch("/data");
+    const message = await response.text();
+
+    /** This is just a temporary place to put this message. */
+    document.querySelector("#comments-list").innerHTML = message;
+}
+
+loadServerMessage();
