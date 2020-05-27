@@ -1,0 +1,102 @@
+
+main#projects {
+  display: flex;
+  flex-direction: column;
+
+  & > #projects-list {
+    width: 85%;
+    height: 0;
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    & > .project {
+      flex-basis: 250px;
+      margin-bottom: 64px;
+
+      & > .name {
+        font-family: Montserrat;
+        font-size: 24px;
+        font-weight: 600;
+        color: black;
+      }
+
+      & > .description {
+        font-family: Montserrat;
+        font-size: 16px;
+        font-weight: 500;
+        color: #787878;
+
+        margin-top: 8px;
+        width: 80%;
+      }
+      & > .tags {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        margin-top: 16px;
+
+        & > .tag {
+          padding: 4px 12px;
+          margin-right: 8px;
+          border-radius: 20px;
+
+          font-family: Montserrat;
+          font-weight: 500;
+          font-size: 12px;
+          color: black;
+
+          background: #e0f4ee;
+
+          &:hover {
+            cursor: pointer;
+          }
+          &.selected {
+            background: #4ce2b5;
+          }
+        }
+      }
+    }
+  }
+
+  & > #tags-list {
+    width: 85%;
+    height: 36px;
+    margin-top: 24px;
+
+    display: flex;
+    flex-direction: row;
+
+    & > .tag {
+      height: 36px;
+      width: fit-content;
+      border-radius: 18px;
+
+      padding: 0px 16px;
+      margin-right: 16px;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      font-family: Montserrat;
+      font-weight: 600;
+      font-size: 16px;
+      color: white;
+
+      background: #c4c4c4;
+      user-select: none;
+
+      &:hover {
+        cursor: pointer;
+      }
+      &.selected {
+        background: #4ce2b5;
+      }
+    }
+  }
+}
