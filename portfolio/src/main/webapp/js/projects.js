@@ -1,11 +1,5 @@
 const tagNames = ["Personal", "Google", "JS", "C++", "Work", "Python"];
-const projectObjects = [
-    {name: "Recall", description: "Hospital Scheduling", tags: ["Personal", "JS"]},
-    {name: "Vectorly", description: "3D Math Calculator", tags: ["Personal", "JS"]},
-    {name: "Houndify React Native", description: "Official React Native port of Houndify SDK", tags: ["Work", "JS"]},
-    {name: "Parlex", description: "Language agnostic zero-dependency AST parser", tags: ["Personal", "C++"]},
-    {name: "StereoCloud", description: "Stereoscopic image to point cloud generation", tags: ["Personal", "Python"]}
-];
+import projectsObject from "./projects-object.js";
 
 
 /**
@@ -151,7 +145,8 @@ class Project {
         const tagsMap = Tag.tags;
         const noTagsSelected = ![...tagsMap.values()].some(tag => tag.selected === true);
 
-        for(let {name, description, tags} of projectObjects){
+        for(let projectId in projectsObject){
+            const {name, description, tags} = projectsObject[projectId];
             /**
              * Display a project if either
                 (1) no tags selected, or
