@@ -17,6 +17,7 @@ body {
   width: 100%;
 
   margin: 0;
+  background: var(--bg-color);
 }
 
 main {
@@ -37,7 +38,7 @@ main {
     font-family: Montserrat;
     font-size: 12.5vh;
     line-height: 10vh;
-    color: #e6e6e6;
+    color: var(--watermark-color);
     font-weight: 600;
 
     animation: watermark-entry 1.8s forwards ease-out;
@@ -59,6 +60,7 @@ main {
     font-family: Montserrat;
     font-size: 30px;
     font-weight: 600;
+    color: var(--text-color);
   }
 
   & h2 {
@@ -67,6 +69,7 @@ main {
     font-weight: 600;
 
     margin-top: 48px;
+    color: var(--text-color);
   }
 
   & p,
@@ -75,11 +78,12 @@ main {
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
+    color: var(--text-color);
   }
 
   & a {
-    background: #4ce2b5;
-    color: black;
+    background: var(--accent-color);
+    color: var(--text-color);
     text-decoration: none;
     font-weight: 600;
     padding: 3px 8px;

@@ -21,14 +21,14 @@ main#projects {
         font-family: Montserrat;
         font-size: 24px;
         font-weight: 600;
-        color: black;
+        color: var(--project-name-color);
       }
 
       & > .description {
         font-family: Montserrat;
         font-size: 16px;
         font-weight: 500;
-        color: #787878;
+        color: var(--project-description-color);
 
         margin-top: 8px;
         width: 80%;
@@ -48,15 +48,16 @@ main#projects {
           font-family: Montserrat;
           font-weight: 500;
           font-size: 12px;
-          color: black;
+          color: var(--project-tag-text-color);
 
-          background: #e0f4ee;
+          background: var(--project-tag-bg-color);
 
           &:hover {
             cursor: pointer;
           }
           &.selected {
-            background: #4ce2b5;
+           background: var(--project-tag-selected-bg-color);
+           color: var(--project-tag-selected-text-color);
           }
         }
       }
@@ -86,16 +87,17 @@ main#projects {
       font-family: Montserrat;
       font-weight: 600;
       font-size: 16px;
-      color: white;
+      color: var(--tag-text-color);
 
-      background: #c4c4c4;
+      background: var(--tag-bg-color);
       user-select: none;
 
       &:hover {
         cursor: pointer;
       }
       &.selected {
-        background: #4ce2b5;
+      color: var(--tag-selected-text-color);
+      background: var(--tag-selected-bg-color);
       }
     }
   }
