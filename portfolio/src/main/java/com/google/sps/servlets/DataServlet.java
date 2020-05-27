@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  /** A temporary set of comments that we will hardcode. */
   ArrayList<String> comments = new ArrayList<String>();
 
   public DataServlet(){
@@ -37,6 +38,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /** Send JSON encoded list of comments. */
     Gson gson = new Gson();
     String json = gson.toJson(comments);
 
