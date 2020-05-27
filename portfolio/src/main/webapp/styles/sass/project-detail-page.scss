@@ -1,0 +1,13 @@
+main#project-detail {
+    & > h1 {
+        font-size: 48px;
+        font-family: Montserrat;
+        color: var(--text-color);
+    }
+
+    & > #description {
+        font-size: 18px;
+        font-family: Montserrat;
+        color: var(--text-color);
+    }
+}
