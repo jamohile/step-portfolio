@@ -20,11 +20,11 @@ main#landing {
     height: 70vh;
     width: auto;
     object-fit: contain;
-    animation: entry 1s 0.4s forwards ease-out;
+    animation: hero-entry 1s 0.4s forwards ease-out;
 
     opacity: 0;
     z-index: 100;
-    @keyframes entry {
+    @keyframes hero-entry {
       from {
         bottom: -120px;
         opacity: 0;

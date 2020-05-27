@@ -11,9 +11,9 @@ header {
     font-size: 30px;
     color: black;
     font-weight: 600;
-    animation: entry 1s forwards ease-out;
+    animation: wordmark-entry 1s forwards ease-out;
 
-    @keyframes entry {
+    @keyframes wordmark-entry {
       from {
         margin-left: -60px;
         opacity: 0;
@@ -28,9 +28,9 @@ header {
   & > nav {
     display: flex;
     flex-direction: row;
-    animation: entry 1s forwards ease-out;
+    animation: nav-entry 1s forwards ease-out;
 
-    @keyframes entry {
+    @keyframes nav-entry {
       from {
         margin-right: -60px;
         opacity: 0;

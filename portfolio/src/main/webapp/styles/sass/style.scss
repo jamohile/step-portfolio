@@ -38,10 +38,10 @@ main {
     color: #e6e6e6;
     font-weight: 600;
 
-    animation: entry 1.8s forwards ease-out;
+    animation: watermark-entry 1.8s forwards ease-out;
     z-index: 50;
 
-    @keyframes entry {
+    @keyframes watermark-entry {
       from {
         margin-bottom: -120px;
         opacity: 0;
