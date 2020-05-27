@@ -8,7 +8,7 @@ const projectId = new URLSearchParams(location.search).get("id");
 
 /**
  * All data about the current project.
- * @type {{id: string, name: string, description: string, detail: string, tags: string[]}}
+ * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
  */
 const project = projectsObject[projectId];
 
@@ -17,4 +17,13 @@ console.assert(project !== undefined);
 /** Fill in information for this project. */
 document.querySelector("#name").innerHTML = project.name;
 document.querySelector("#description").innerHTML = project.description;
-document.querySelector("#detail").innerHTML = project.detail;
+
+/** A bullet-list of details about this project. */
+const detailListNode = document.querySelector("#detail");
+
+/** Create a new list element (detail) for each detail in the project. */
+for(let detail of project.detail){
+    const detailNode = document.createElement("li");
+    detailNode.innerHTML = detail;
+    detailListNode.appendChild(detailNode);
+}
