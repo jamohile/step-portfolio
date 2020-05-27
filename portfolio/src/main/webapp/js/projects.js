@@ -1,4 +1,4 @@
-const tagNames = ["Personal", "Google", "JS", "C++", "Work", "Python"];
+const tagNames = ["Personal", "Google", "JS", "C++", "Work", "Python", "Soundhound"];
 import projectsObject from "./projects-object.js";
 
 
