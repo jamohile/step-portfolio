@@ -1,103 +1,102 @@
 html {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 
-    margin: 0;
+  margin: 0;
 }
 
 header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 60px;
+
+  & > #wordmark {
+    font-family: Montserrat;
+    font-size: 30px;
+    color: black;
+    font-weight: 600;
+    animation: entry 1s forwards ease-out;
+
+    @keyframes entry {
+      from {
+        margin-left: -60px;
+        opacity: 0;
+      }
+      to {
+        margin-left: 0px;
+        opacity: 1;
+      }
+    }
+  }
+
+  & > nav {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    animation: entry 1s forwards ease-out;
 
-    margin: 60px;
+    @keyframes entry {
+      from {
+        margin-right: -60px;
+        opacity: 0;
+      }
+      to {
+        margin-right: 0px;
+        opacity: 1;
+      }
+    }
 
-    & > #wordmark {
+    & > a {
+      position: relative;
+
+      text-decoration: none;
+
+      margin-left: 30px;
+
+      & > .hover-indicator {
+        position: absolute;
+        left: 2px;
+        top: -2px;
+        height: 2px;
+        width: 0px;
+        border-radius: 1px;
+
+        background: #4ce2b5;
+
+        transition: width 0.2s;
+      }
+
+      &:hover > .hover-indicator {
+        width: 20px;
+      }
+
+      & > .title {
         font-family: Montserrat;
-        font-size: 30px;
+        font-size: 24px;
         color: black;
-        font-weight: 600;
-        animation: entry 1s forwards ease-out;
-    
-        @keyframes entry {
-            from {
-                margin-left: -60px;
-                opacity: 0;
-            }
-            to {
-                margin-left: 0px;
-                opacity: 1;
-            }  
-        }
+        font-weight: 500;
+      }
     }
-
-    & > nav {
-        display: flex;
-        flex-direction: row;
-        animation: entry 1s forwards ease-out;
-
-        @keyframes entry{
-            from {
-                margin-right: -60px;
-                opacity: 0;
-            }
-            to {
-                margin-right: 0px;
-                opacity: 1;
-            }
-        }
-
-        & > a {
-            position: relative;
-
-            text-decoration: none;
-
-            margin-left: 30px;
-
-            & > .hover-indicator {
-                position: absolute;
-                left: 2px;
-                top: -2px;
-                height: 2px;
-                width: 0px;
-                border-radius: 1px;
-
-                background: #4CE2B5;
-
-                transition: width 0.2s;
-            }
-
-            &:hover > .hover-indicator {
-                width: 20px;
-            }
-
-            & > .title {
-                font-family: Montserrat;
-                font-size: 24px;
-                color: black;
-                font-weight: 500;
-            }
-        }
-    }
+  }
 }
 
 main {
-    height: 0;
-    flex-grow: 1;
+  height: 0;
+  flex-grow: 1;
 
-    padding: 60px;
-    padding-top: 0px;
-}
+  padding: 60px;
+  padding-top: 0px;
 
-main > #watermark{
+  & > #watermark {
     position: absolute;
     left: calc(100% - 60px);
     bottom: 60px;
@@ -111,198 +110,199 @@ main > #watermark{
     color: #e6e6e6;
     font-weight: 600;
 
-    animation: watermark-entry 1.8s forwards ease-out;
+    animation: entry 1.8s forwards ease-out;
     z-index: 50;
-}
 
-@keyframes watermark-entry{
-    from {
+    @keyframes entry {
+      from {
         margin-bottom: -120px;
         opacity: 0;
-    }
-    to {
+      }
+      to {
         margin-bottom: 0px;
         opacity: 1;
+      }
     }
+  }
 }
 
 main#landing > #accent {
-    position: absolute;
-    left: 60px;
-    bottom: 60px;
+  position: absolute;
+  left: 60px;
+  bottom: 60px;
 
-    width: 25px;
-    height: 10px;
-    border-radius: 5px;
-    background: #4CE2B5;
+  width: 25px;
+  height: 10px;
+  border-radius: 5px;
+  background: #4ce2b5;
 }
 
-main#landing > #hero{
-    position: absolute;
+main#landing > #hero {
+  position: absolute;
 
-    left: 50%;
-    transform: translateX(-50%);
+  left: 50%;
+  transform: translateX(-50%);
 
-    height: 70vh;
-    width: auto;
-    object-fit: contain;
-    animation: hero-entry 1s 0.4s forwards ease-out;
+  height: 70vh;
+  width: auto;
+  object-fit: contain;
+  animation: hero-entry 1s 0.4s forwards ease-out;
 
+  opacity: 0;
+  z-index: 100;
+}
+
+@keyframes hero-entry {
+  from {
+    bottom: -120px;
     opacity: 0;
-    z-index: 100;
-}
-
-@keyframes hero-entry{
-    from {
-        bottom: -120px;
-        opacity: 0;
-    }
-    to {
-        bottom: -20px;
-        opacity: 1;
-    }
+  }
+  to {
+    bottom: -20px;
+    opacity: 1;
+  }
 }
 
 main#projects {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 main#projects > #projects-list {
-    width: 85%;
-    height: 0;
-    flex-grow: 1;
-  
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: flex-start;
+  width: 85%;
+  height: 0;
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
 
-main#projects > #projects-list > .project{
-    flex-basis: 250px;
-    margin-bottom: 64px;
+main#projects > #projects-list > .project {
+  flex-basis: 250px;
+  margin-bottom: 64px;
 }
 
 main#projects > #projects-list > .project > .name {
-    font-family: Montserrat;
-    font-size: 24px;
-    font-weight: 600;
-    color: black;
+  font-family: Montserrat;
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
 }
 
 main#projects > #projects-list > .project > .description {
-    font-family: Montserrat;
-    font-size: 16px;
-    font-weight: 500;
-    color: #787878;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: 500;
+  color: #787878;
 
-    margin-top: 8px;
-    width: 80%;
+  margin-top: 8px;
+  width: 80%;
 }
 
 main#projects > #projects-list > .project > .tags {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 main#projects > #projects-list > .project > .tags > .tag {
-    padding: 4px 12px;
-    margin-right: 8px;
-    border-radius: 20px;
+  padding: 4px 12px;
+  margin-right: 8px;
+  border-radius: 20px;
 
-    font-family: Montserrat;
-    font-weight: 500;
-    font-size: 12px;
-    color: black;
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 12px;
+  color: black;
 
-    background: #e0f4ee;
+  background: #e0f4ee;
 }
 
 main#projects > #projects-list > .project > .tags > .tag:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 main#projects > #projects-list > .project > .tags > .tag.selected {
-    background: #4CE2B5;
+  background: #4ce2b5;
 }
 
-
 main#projects > #tags-list {
-    width: 85%;
-    height: 36px;
-    margin-top: 24px;
+  width: 85%;
+  height: 36px;
+  margin-top: 24px;
 
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 main#projects > #tags-list > .tag {
-    height: 36px;
-    width: fit-content;
-    border-radius: 18px;
+  height: 36px;
+  width: fit-content;
+  border-radius: 18px;
 
-    padding: 0px 16px;
-    margin-right: 16px;
+  padding: 0px 16px;
+  margin-right: 16px;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-    font-family: Montserrat;
-    font-weight: 600;
-    font-size: 16px;
-    color: white;
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
 
-    background: #C4C4C4;
-    user-select: none;
+  background: #c4c4c4;
+  user-select: none;
 }
 
 main#projects > #tags-list > .tag:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 main#projects > #tags-list > .tag.selected {
-    background: #4CE2B5;
+  background: #4ce2b5;
 }
 
 main#personal > #bio {
-    width: 50%;
-    min-width: 600px;
-    height: 100%;
-    overflow-y: auto;
+  width: 50%;
+  min-width: 600px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 main#personal > #bio h1 {
-    font-family: Montserrat;
-    font-size: 30px;
-    font-weight: 600;
+  font-family: Montserrat;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 main#personal > #bio h2 {
-    font-family: Montserrat;
-    font-size: 16px;
-    font-weight: 600;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: 600;
 
-    margin-top: 48px;
+  margin-top: 48px;
 }
 
-main#personal > #bio p, main#personal > #bio li {
-    font-family: Montserrat;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
+main#personal > #bio p,
+main#personal > #bio li {
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
 }
 
 main#personal > #bio p a {
-    background: #4CE2B5;
-    color: black;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 3px 8px;
-    margin: 4px;
-    border-radius: 32px;
+  background: #4ce2b5;
+  color: black;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 3px 8px;
+  margin: 4px;
+  border-radius: 32px;
 }
