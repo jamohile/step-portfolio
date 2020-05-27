@@ -92,10 +92,12 @@ class Project {
      * @param {string} description
      * @param {string[]} tags
      */
-    constructor(name, description, tags){
+    constructor(id, name, description, tags){
         /** Get root HTML node */
         this.node = Project.template.content.cloneNode(true).querySelector(".project");
 
+        /** @private @const {string} */
+        this.id = id;
         /** @private @const {string} */
         this.name = name;
         /** @private @const {string} */
@@ -115,6 +117,7 @@ class Project {
      */
     render(){
         this.node.querySelector(".name").innerHTML = this.name;
+        this.node.querySelector(".name").href = `/project-detail?id=${this.id}`;
         this.node.querySelector(".description").innerHTML = this.description;
 
         /** Show a list of all tags this project has. */
@@ -155,7 +158,7 @@ class Project {
              /** Naively check tag membership right now, efficiency not a big problem. */
              const tagIncluded = tags.some(tag => tagsMap.get(tag).selected === true);
             if (noTagsSelected || tagIncluded){
-                Project.projects.set(name, new Project(name, description, tags));
+                Project.projects.set(name, new Project(projectId, name, description, tags));
             }
         }
     }
