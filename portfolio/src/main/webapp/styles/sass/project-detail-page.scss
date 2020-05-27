@@ -18,14 +18,20 @@ main#project-detail {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      align-items: center;
 
       width: 100%;
+      margin-bottom: 8px;
 
       & > h2 {
         margin-top: 0;
+        margin-bottom: 0;
       }
 
       & > .controls {
+        &:hover{
+            cursor: pointer;
+        }
         &.hidden {
           display: none;
         }
@@ -33,6 +39,8 @@ main#project-detail {
     }
 
     & #comments-list {
+      margin-top: 8px;
+
       & > .comment {
         background: var(--comment-bg-color);
 
@@ -53,7 +61,6 @@ main#project-detail {
       border-radius: 4px;
 
       padding: 8px;
-      margin-top: 8px;
 
       display: flex;
       flex-direction: column;

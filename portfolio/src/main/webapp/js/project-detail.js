@@ -40,4 +40,34 @@ for(let detail of project.detail){
      Comment.populateAll(comments);
  }
 
+
+/** Methods to hide/show new comment form and related buttons. */
+class NewCommentForm {
+    /** @const */
+    static formNode = document.querySelector("#new-comment");
+    /** @const */
+    static showFormButtonNode = document.querySelector("#show-comment-form-button");
+    /** @const */
+    static hideFormButtonNode = document.querySelector("#hide-comment-form-button");
+
+    constructor(){
+        NewCommentForm.showFormButtonNode.addEventListener("click", this.show);
+        NewCommentForm.hideFormButtonNode.addEventListener("click", this.hide);
+    }
+
+    hide(){
+        NewCommentForm.formNode.classList.add("hidden");
+        NewCommentForm.showFormButtonNode.classList.remove("hidden");
+        NewCommentForm.hideFormButtonNode.classList.add("hidden");
+    }
+
+    show(){
+        NewCommentForm.formNode.classList.remove("hidden");
+        NewCommentForm.showFormButtonNode.classList.add("hidden");
+        NewCommentForm.hideFormButtonNode.classList.remove("hidden");
+    }
+}
+
+const newCommentForm = new NewCommentForm();
+
  loadComments();
