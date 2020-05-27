@@ -1,0 +1,40 @@
+html {
+    --bg-color: white;
+    --text-color: black;
+    --accent-color: #4CE2B5;
+    --watermark-color: #E6E6E6;
+
+    --tag-bg-color: #C4C4C4;
+    --tag-text-color: white;
+
+    --tag-selected-bg-color: var(--accent-color);
+    --tag-selected-text-color: white;
+
+    --project-name-color: var(--text-color);
+    --project-description-color: #787878;
+
+    --project-tag-bg-color: var(--tag-bg-color);
+    --project-tag-text-color: var(--text-color);
+
+    --project-tag-selected-bg-color: var(--accent-color);
+    --project-tag-selected-text-color: var(--project-tag-text-color);
+}
+
+html.dark {
+    --bg-color: #3B4151;
+    --text-color: white;
+    --watermark-color: #353A49;
+
+    --tag-bg-color: #56607B;
+    --tag-text-color: white;
+
+    --tag-selected-text-color: var(--bg-color);
+
+    --project-name-color: var(--text-color);
+    --project-description-color: var(--text-color);
+
+    --project-tag-bg-color: var(--tag-bg-color);
+    --project-tag-text-color: white;
+
+    --project-tag-selected-text-color: var(--text-color);
+}
