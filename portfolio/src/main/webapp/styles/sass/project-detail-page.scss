@@ -1,13 +1,31 @@
 main#project-detail {
-    & > h1 {
-        font-size: 48px;
-        font-family: Montserrat;
-        color: var(--text-color);
-    }
+  & > h1 {
+    font-size: 48px;
+    font-family: Montserrat;
+    color: var(--text-color);
+  }
 
-    & > #description {
-        font-size: 18px;
+  & > #description {
+    font-size: 18px;
+    font-family: Montserrat;
+    color: var(--text-color);
+  }
+
+  & #comments-list {
+    max-width: 300px;
+
+    & > .comment {
+      background: var(--comment-bg-color);
+
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+
+      & > .message {
+        font-size: 12px;
         font-family: Montserrat;
-        color: var(--text-color);
+        color: var(--comment-text-color);
+      }
     }
+  }
 }
