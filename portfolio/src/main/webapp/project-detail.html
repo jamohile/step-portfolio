@@ -33,8 +33,18 @@
             <ul id="detail">
             </ul>
         </section>
-        <section>
-            <h2>Comments</h2>
+        <section id="comments">
+            <div id="header">
+                <h2>Comments</h2>
+                <span class="controls material-icons">add</span>
+                <span class="controls hidden material-icons">close</span>
+            </div>
+
+            <form id="new-comment" class="hidden">
+                <textarea class="comment"  placeholder="Enter a comment."></textarea>
+                <input type="submit" name="Post"/>
+            </form>
+
             <div id="comments-list">
                 <template id="comment-template">
                     <div class="comment">
