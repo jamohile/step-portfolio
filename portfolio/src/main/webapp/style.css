@@ -98,38 +98,6 @@ main {
     padding-top: 0px;
 }
 
-main#landing{
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-end;
-}
-
-main#landing > #hero{
-    position: relative;
-
-    height: 70vh;
-    width: auto;
-    object-fit: contain;
-    animation: hero-entry 1s 1s forwards ease-out;
-
-    opacity: 0;
-}
-
-@keyframes hero-entry{
-    from {
-        bottom: -120px;
-        opacity: 0;
-    }
-    to {
-        bottom: -65px;
-        opacity: 1;
-    }
-}
-
-
-
 main > #watermark{
     position: absolute;
     left: calc(100% - 60px);
@@ -144,18 +112,162 @@ main > #watermark{
     color: #e6e6e6;
     font-weight: 600;
 
-    animation: watermark-entry 1.4s forwards ease-out;
+    animation: watermark-entry 1.8s forwards ease-out;
+    z-index: 50;
 }
 
 @keyframes watermark-entry{
     from {
-        margin-bottom: -60px;
+        margin-bottom: -120px;
         opacity: 0;
     }
     to {
         margin-bottom: 0px;
         opacity: 1;
     }
+}
+
+main#landing > #accent {
+    position: absolute;
+    left: 60px;
+    bottom: 60px;
+
+    width: 25px;
+    height: 10px;
+    border-radius: 5px;
+    background: #4CE2B5;
+}
+
+main#landing > #hero{
+    position: absolute;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    height: 70vh;
+    width: auto;
+    object-fit: contain;
+    animation: hero-entry 1s 0.4s forwards ease-out;
+
+    opacity: 0;
+    z-index: 100;
+}
+
+@keyframes hero-entry{
+    from {
+        bottom: -120px;
+        opacity: 0;
+    }
+    to {
+        bottom: -20px;
+        opacity: 1;
+    }
+}
+
+main#projects {
+    display: flex;
+    flex-direction: column;
+}
+
+main#projects > #projects-list {
+    width: 85%;
+    height: 0;
+    flex-grow: 1;
+  
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+main#projects > #projects-list > .project{
+    flex-basis: 250px;
+    margin-bottom: 64px;
+}
+
+main#projects > #projects-list > .project > .name {
+    font-family: Montserrat;
+    font-size: 24px;
+    font-weight: 600;
+    color: black;
+}
+
+main#projects > #projects-list > .project > .description {
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 500;
+    color: #787878;
+
+    margin-top: 8px;
+    width: 80%;
+}
+
+main#projects > #projects-list > .project > .tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    margin-top: 16px;
+}
+
+main#projects > #projects-list > .project > .tags > .tag {
+    padding: 4px 12px;
+    margin-right: 8px;
+    border-radius: 20px;
+
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 12px;
+    color: black;
+
+    background: #e0f4ee;
+}
+
+main#projects > #projects-list > .project > .tags > .tag:hover {
+    cursor: pointer;
+}
+
+main#projects > #projects-list > .project > .tags > .tag.selected {
+    background: #4CE2B5;
+}
+
+
+main#projects > #tags-list {
+    width: 85%;
+    height: 36px;
+    margin-top: 24px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+main#projects > #tags-list > .tag {
+    height: 36px;
+    width: fit-content;
+    border-radius: 18px;
+
+    padding: 0px 16px;
+    margin-right: 16px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 16px;
+    color: white;
+
+    background: #C4C4C4;
+    user-select: none;
+}
+
+main#projects > #tags-list > .tag:hover {
+    cursor: pointer;
+}
+
+main#projects > #tags-list > .tag.selected {
+    background: #4CE2B5;
 }
 
 main#personal > #bio {
