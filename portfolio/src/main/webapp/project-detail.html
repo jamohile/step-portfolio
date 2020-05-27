@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Jay Mohile</title>
+    <link rel="stylesheet" href="styles/css/style.css">
+    <script src="script.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+        <div id="wordmark" href="/">Jay Mohile</div>
+        <nav>
+            <span id="theme-toggle" class="material-icons" onclick="toggleTheme()">brightness_4</span>
+            <a href="/personal.html">
+                <div class="hover-indicator"></div>
+                <div class="title">Personal</div>
+            </a>
+            <a href="/projects.html">
+                <div class="hover-indicator"></div>
+                <div class="title" >Projects</div>
+            </a>
+        </nav>
+    </header>
+
+    <main id="project-detail">
+        <h1 id="name">Project Name</h1>
+        <div id="description">Project Description</div>
+        <section>
+            <h2>Details</h2>
+            <p>Detailed description of project.</p>
+        </section>
+        <div id="watermark">Projects.</div>
+    </main>
+
+    <!-- This must be included at the end, to allow above templates to be added to dom. -->
+    <script src="js/projects.js"></script>
+  </body>
+</html>
