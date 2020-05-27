@@ -28,6 +28,7 @@ header {
   & > nav {
     display: flex;
     flex-direction: row;
+    align-items: center;
     animation: nav-entry 1s forwards ease-out;
 
     @keyframes nav-entry {
@@ -39,6 +40,11 @@ header {
         margin-right: 0px;
         opacity: 1;
       }
+    }
+
+    & > #theme-toggle{
+        color: var(--text-color);
+        cursor: pointer;
     }
 
     & > a {
