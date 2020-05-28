@@ -1,0 +1,7 @@
+indexes:
+    - kind: Comment
+      properties:
+        - name: projectId
+          direction: asc
+        - name: timestamp
+          direction: desc
