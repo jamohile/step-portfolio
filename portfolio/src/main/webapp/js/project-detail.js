@@ -35,7 +35,7 @@ for(let detail of project.detail){
  * @return {Promise<undefined>}
  */
  async function loadComments(){
-     const response = await fetch("/data");
+     const response = await fetch("/comments");
      const comments = await response.json();
      Comment.populateAll(comments);
  }
