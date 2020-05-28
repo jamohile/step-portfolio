@@ -92,23 +92,29 @@ main#project-detail {
       }
     }
 
-    & > #delete-comments {
-        width: 100%;
-        background: none;
-        border: none;
+    & > #controls {
+        display: flex;
+        flex-direction: row;
 
-        font-family: Montserrat;
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-color);
-        text-decoration: underline;
-        cursor: pointer;
+        & > .control {
+            width: fit-content;
+            background: none;
+            border: none;
 
-        padding: 0px;
+            font-family: Montserrat;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: underline;
+            cursor: pointer;
 
-        &.hidden {
-            display: none;
-        }
+            padding: 0px;
+            margin-right: 8px;
+
+            &.hidden {
+                display: none;
+            }
+        }    
     }
   }
 }
