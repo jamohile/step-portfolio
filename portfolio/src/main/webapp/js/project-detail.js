@@ -36,7 +36,9 @@ for(let detail of project.detail){
  */
  async function loadComments(){
      const response = await fetch("/comments");
+     /** @type {CommentData} */
      const comments = await response.json();
+     
      Comment.populateAll(comments);
  }
 
