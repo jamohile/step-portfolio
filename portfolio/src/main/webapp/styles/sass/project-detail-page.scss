@@ -92,24 +92,23 @@ main#project-detail {
       }
     }
 
-    & > form#delete-comments {
+    & > #delete-comments {
         width: 100%;
-
-        &.hidden {
-            display: none;
-        }
-
-        & > input[type="submit"] { 
         background: none;
         border: none;
 
         font-family: Montserrat;
+        font-size: 12px;
         font-weight: 500;
         color: var(--text-color);
         text-decoration: underline;
+        cursor: pointer;
 
         padding: 0px;
-      }
+
+        &.hidden {
+            display: none;
+        }
     }
   }
 }

@@ -114,10 +114,6 @@ public class CommentsServlet extends HttpServlet {
 
     /** Convert commentKeys to a normal array so it can be used by datastore.delete varargs. */
     datastore.delete(commentKeys.toArray(new Key[commentKeys.size()]));
-    
-    /** Redirect client back to original project page. */
-    String redirectUrl = "/project-detail.html?projectId=" + projectId; 
-    response.sendRedirect(redirectUrl);
   }
   
 }

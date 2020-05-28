@@ -51,6 +51,15 @@ for(let detail of project.detail){
      Comment.populateAll(comments);
  }
 
+/** Delete all comments for this project, then reload. */
+async function deleteComments(){
+    await await fetch(`/comments?projectId=${projectId}`, {
+        method: "DELETE"
+    });
+
+    loadComments();
+}
+document.querySelector("#delete-comments").addEventListener("click", deleteComments);
 
 /** Methods to hide/show new comment form and related buttons. */
 class NewCommentForm {
