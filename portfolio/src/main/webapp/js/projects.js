@@ -88,6 +88,7 @@ class Project {
     static container = document.querySelector("#projects-list");
 
     /**
+     * @param {string} id
      * @param {string} name
      * @param {string} description
      * @param {string[]} tags
