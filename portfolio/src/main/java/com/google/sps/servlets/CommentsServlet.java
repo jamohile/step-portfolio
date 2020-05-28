@@ -35,18 +35,24 @@ public class CommentsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    /** Get comments from datastore. **/
-    Query commentsQuery = new Query("Comment")
-                            .addSort("timestamp", Query.SortDirection.DESCENDING);
+    String projectId = request.getParameter("projectId");
 
+    /** 
+     * Get comments from datastore. 
+     * Filter to only show comments for this project.
+     */
+    Query commentsQuery = new Query("Comment")
+                            .addSort("timestamp", Query.SortDirection.DESCENDING)
+                            .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
+    /** Load query. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
+    /** Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
     for (Entity entity : commentResults.asIterable()) {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
-        String projectId = (String) entity.getProperty("projectId");
         long timestamp = (long) entity.getProperty("timestamp");
 
         Comment comment = new Comment(id, message, projectId, timestamp);

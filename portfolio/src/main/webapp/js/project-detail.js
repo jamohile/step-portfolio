@@ -35,10 +35,11 @@ for(let detail of project.detail){
  * @return {Promise<undefined>}
  */
  async function loadComments(){
-     const response = await fetch("/comments");
+     /** Get comments for the current project. */
+     const response = await fetch(`/comments?projectId=${projectId}`);
      /** @type {CommentData} */
      const comments = await response.json();
-     
+
      Comment.populateAll(comments);
  }
 
