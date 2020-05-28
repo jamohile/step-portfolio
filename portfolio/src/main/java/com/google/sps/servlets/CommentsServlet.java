@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.gson.Gson;
@@ -39,8 +40,8 @@ public class CommentsServlet extends HttpServlet {
 
     /** 
      * Get comments from datastore. 
-     * Filter to only show comments for this project.
-     */
+     * Filter to only show comments for a particular project.
+    */
     Query commentsQuery = new Query("Comment")
                             .addSort("timestamp", Query.SortDirection.DESCENDING)
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
@@ -50,6 +51,7 @@ public class CommentsServlet extends HttpServlet {
 
     /** Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
+    
     for (Entity entity : commentResults.asIterable()) {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
@@ -88,4 +90,34 @@ public class CommentsServlet extends HttpServlet {
     String redirectUrl = "/project-detail.html?projectId=" + projectId; 
     response.sendRedirect(redirectUrl);
   }
+
+  @Override
+  public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    String projectId = request.getParameter("projectId");
+    
+    /** 
+     * Get keys for all comments related to this projectId.
+     */
+    Query commentsQuery = new Query("Comment")
+                            .setKeysOnly()
+                            .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
+    /** Load query. */
+    PreparedQuery commentResults = datastore.prepare(commentsQuery);
+
+    /** Extract keys and delete. */
+    ArrayList<Key> commentKeys = new ArrayList<Key>();
+    for (Entity comment : commentResults.asIterable()) {
+        commentKeys.add(comment.getKey());
+    }
+
+    /** Convert commentKeys to a normal array so it can be used by datastore.delete varargs. */
+    datastore.delete(commentKeys.toArray(new Key[commentKeys.size()]));
+    
+    /** Redirect client back to original project page. */
+    String redirectUrl = "/project-detail.html?projectId=" + projectId; 
+    response.sendRedirect(redirectUrl);
+  }
+  
 }
