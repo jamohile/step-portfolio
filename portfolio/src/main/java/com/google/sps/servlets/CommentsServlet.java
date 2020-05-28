@@ -13,10 +13,12 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
@@ -28,17 +30,28 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/comments")
-public class DataServlet extends HttpServlet {
-
-  /** A simple list of text-only comments. */
-  ArrayList<String> comments = new ArrayList<String>();
-
-  public DataServlet(){
-      super();
-  }
+public class CommentsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    /** Get comments from datastore. **/
+    Query commentsQuery = new Query("Comment")
+                            .addSort("timestamp", Query.SortDirection.DESCENDING);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery commentResults = datastore.prepare(commentsQuery);
+
+    ArrayList<Comment> comments = new ArrayList<Comment>();
+    for (Entity entity : commentResults.asIterable()) {
+        long id = entity.getKey().getId();
+        String message = (String) entity.getProperty("message");
+        String projectId = (String) entity.getProperty("projectId");
+        long timestamp = (long) entity.getProperty("timestamp");
+
+        Comment comment = new Comment(id, message, projectId, timestamp);
+        comments.add(comment);
+    }
 
     /** Send JSON encoded list of comments. */
     Gson gson = new Gson();
@@ -64,9 +77,6 @@ public class DataServlet extends HttpServlet {
     /** Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
-
-    comments.add(message);
     
     /** Redirect client back to original project page. */
     String redirectUrl = "/project-detail.html?projectId=" + projectId; 
