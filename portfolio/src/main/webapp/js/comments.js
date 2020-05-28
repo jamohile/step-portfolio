@@ -67,9 +67,9 @@ export class Comment {
      * Load comments from the server, then display.
      * @return {Promise<undefined>}
     */
-    static async loadAll(projectId){
+    static async loadAll(projectId, commentsCount){
         /** Get comments for the current project. */
-        const response = await fetch(`/comments?projectId=${projectId}`);
+        const response = await fetch(`/comments?projectId=${projectId}&commentsCount=${commentsCount}`);
         /** @type {CommentData} */
         const comments = await response.json();
 
@@ -85,11 +85,11 @@ export class Comment {
     }
 
     /** Delete all comments for this project, then reload. */
-    static async deleteAll(projectId){
+    static async deleteAll(projectId, commentsCount){
         await fetch(`/comments?projectId=${projectId}`, {
             method: "DELETE"
         });
 
-        Comment.loadAll();
+        Comment.loadAll(projectId, commentsCount);
     }
 }

@@ -114,6 +114,9 @@ main#project-detail {
             &.hidden {
                 display: none;
             }
+            &.selected {
+                font-weight: 600;
+            }
         }    
     }
   }
