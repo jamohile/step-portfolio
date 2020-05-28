@@ -13,8 +13,12 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
+import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -35,6 +39,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     /** Send JSON encoded list of comments. */
     Gson gson = new Gson();
     String json = gson.toJson(comments);
@@ -45,8 +50,21 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /** Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
+    long timestamp = System.currentTimeMillis();
+
+    /** Create and set properties for a new comment in datastore. */
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("message", message);
+    commentEntity.setProperty("projectId", projectId);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    /** Save to datastore. */
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
 
     comments.add(message);
     
