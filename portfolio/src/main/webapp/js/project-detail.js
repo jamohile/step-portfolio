@@ -40,6 +40,14 @@ for(let detail of project.detail){
      /** @type {CommentData} */
      const comments = await response.json();
 
+    /** Only show delete comments button if comments exist. */
+    const deleteCommentsFormNode = document.querySelector("#delete-comments");
+    if(comments.length > 0){
+        deleteCommentsFormNode.classList.remove("hidden");
+    } else {
+        deleteCommentsFormNode.classList.add("hidden");
+    }
+
      Comment.populateAll(comments);
  }
 

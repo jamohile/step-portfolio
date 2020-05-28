@@ -43,7 +43,7 @@
             <form id="new-comment" class="hidden" action="/comments" method="post">
                 <textarea name="message" class="comment"  placeholder="Enter a comment."></textarea>
                 <input type="hidden" name="projectId"/>
-                <input type="submit" name="Post"/>
+                <input type="submit" value="Post"/>
             </form>
 
             <div id="comments-list">
@@ -54,6 +54,9 @@
                     </div>
                 </template>
             </div>
+            <form id="delete-comments" class="hidden" action="/comments" method="delete">
+                <input type="submit" value="Delete All"/>
+            </form>
         </section>
         <div id="watermark">Projects.</div>
     </main>

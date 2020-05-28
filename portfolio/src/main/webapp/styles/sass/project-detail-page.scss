@@ -91,5 +91,25 @@ main#project-detail {
         margin-top: 4px;
       }
     }
+
+    & > form#delete-comments {
+        width: 100%;
+
+        &.hidden {
+            display: none;
+        }
+
+        & > input[type="submit"] { 
+        background: none;
+        border: none;
+
+        font-family: Montserrat;
+        font-weight: 500;
+        color: var(--text-color);
+        text-decoration: underline;
+
+        padding: 0px;
+      }
+    }
   }
 }
