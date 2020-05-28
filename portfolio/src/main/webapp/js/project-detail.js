@@ -30,36 +30,8 @@ for(let detail of project.detail){
     detailListNode.appendChild(detailNode);
 }
 
-/**
- * Load comments from the server, then display.
- * @return {Promise<undefined>}
- */
- async function loadComments(){
-     /** Get comments for the current project. */
-     const response = await fetch(`/comments?projectId=${projectId}`);
-     /** @type {CommentData} */
-     const comments = await response.json();
 
-    /** Only show delete comments button if comments exist. */
-    const deleteCommentsFormNode = document.querySelector("#delete-comments");
-    if(comments.length > 0){
-        deleteCommentsFormNode.classList.remove("hidden");
-    } else {
-        deleteCommentsFormNode.classList.add("hidden");
-    }
-
-     Comment.populateAll(comments);
- }
-
-/** Delete all comments for this project, then reload. */
-async function deleteComments(){
-    await await fetch(`/comments?projectId=${projectId}`, {
-        method: "DELETE"
-    });
-
-    loadComments();
-}
-document.querySelector("#delete-comments").addEventListener("click", deleteComments);
+document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId));
 
 /** Methods to hide/show new comment form and related buttons. */
 class NewCommentForm {
@@ -95,4 +67,4 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
- loadComments();
+ Comment.loadAll(projectId);
