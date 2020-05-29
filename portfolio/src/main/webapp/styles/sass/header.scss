@@ -11,6 +11,8 @@ header {
     font-size: 30px;
     color: var(--text-color);
     font-weight: 600;
+    text-decoration: none;
+
     animation: wordmark-entry 1s forwards ease-out;
 
     @keyframes wordmark-entry {
