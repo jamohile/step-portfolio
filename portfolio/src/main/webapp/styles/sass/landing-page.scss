@@ -1,0 +1,38 @@
+
+main#landing {
+  & > #accent {
+    position: absolute;
+    left: 60px;
+    bottom: 60px;
+
+    width: 25px;
+    height: 10px;
+    border-radius: 5px;
+    background: #4ce2b5;
+  }
+
+  & > #hero {
+    position: absolute;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    height: 70vh;
+    width: auto;
+    object-fit: contain;
+    animation: hero-entry 1s 0.4s forwards ease-out;
+
+    opacity: 0;
+    z-index: 100;
+    @keyframes hero-entry {
+      from {
+        bottom: -120px;
+        opacity: 0;
+      }
+      to {
+        bottom: -20px;
+        opacity: 1;
+      }
+    }
+  }
+}
