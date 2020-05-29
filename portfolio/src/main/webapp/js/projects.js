@@ -1,6 +1,4 @@
 const tagNames = ["Personal", "Google", "JS", "C++", "Work", "Python", "Soundhound"];
-import projectsObject from "./projects-object.js";
-
 
 /**
  * Tags help group projects.
@@ -80,8 +78,10 @@ class Tag {
  */
 
 class Project {
-    /** All projects currently being displayed, by name. */
-    static projects = new Map();
+    /** All projects currently being displayed. */
+    static projects = [];
+    /** Raw data for all projects. This will be loaded from the server.*/
+    static projectData = [];
     /** Template element */
     static template = document.querySelector("#project-template");
     /** UI to hold individual all projects */
@@ -143,13 +143,13 @@ class Project {
     /** Add all projects to the UI, replacing all existing. */
     static populateAll(){
         Project.container.innerHTML = "";
-        Project.projects.clear();
+        Project.projects = [];
 
         const tagsMap = Tag.tags;
         const noTagsSelected = ![...tagsMap.values()].some(tag => tag.selected === true);
 
-        for(let projectId in projectsObject){
-            const {name, description, tags} = projectsObject[projectId];
+        for(let project of Project.projectData){
+            const {id, name, description, tags} = project;
             /**
              * Display a project if either
                 (1) no tags selected, or
@@ -158,9 +158,16 @@ class Project {
              /** Naively check tag membership right now, efficiency not a big problem. */
              const tagIncluded = tags.some(tag => tagsMap.get(tag).selected === true);
             if (noTagsSelected || tagIncluded){
-                Project.projects.set(name, new Project(projectId, name, description, tags));
+                Project.projects.push(name, new Project(id, name, description, tags));
             }
         }
+    }
+    
+    /** Load projects from server, then populate to UI */
+    static async loadAndPopulateAll() {
+        const response = await fetch('/projects');
+        Project.projectData = await response.json();
+        Project.populateAll();
     }
 }
 
@@ -171,4 +178,4 @@ Tag.populateAll();
  * Add all projects to screen.
  * This must come after tag population since projects filter based on tags.
  */
-Project.populateAll();
+Project.loadAndPopulateAll();

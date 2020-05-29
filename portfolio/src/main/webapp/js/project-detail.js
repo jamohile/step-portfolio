@@ -1,5 +1,3 @@
-import projectsObject from "./projects-object.js";
-
 import {Comment} from "./comments.js";
 
 /**
@@ -8,26 +6,30 @@ import {Comment} from "./comments.js";
  */
 const projectId = new URLSearchParams(location.search).get("projectId");
 
-/**
- * All data about the current project.
- * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
- */
-const project = projectsObject[projectId];
+/** Load data about this project from the server and populate UI items. */
+async function populateDetails() {
+    const response = await fetch(`/projects?projectId=${projectId}`);
+    /**
+    * All data about the current project.
+    * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
+    */
+    const project = await response.json();
 
-console.assert(project !== undefined);
+    console.assert(project !== undefined);
 
-/** Fill in information for this project. */
-document.querySelector("#name").innerHTML = project.name;
-document.querySelector("#description").innerHTML = project.description;
+    /** Fill in information for this project. */
+    document.querySelector("#name").innerHTML = project.name;
+    document.querySelector("#description").innerHTML = project.description;
 
-/** A bullet-list of details about this project. */
-const detailListNode = document.querySelector("#detail");
+    /** A bullet-list of details about this project. */
+    const detailListNode = document.querySelector("#detail");
 
-/** Create a new list element (detail) for each detail in the project. */
-for(let detail of project.detail){
-    const detailNode = document.createElement("li");
-    detailNode.innerHTML = detail;
-    detailListNode.appendChild(detailNode);
+    /** Create a new list element (detail) for each detail in the project. */
+    for(let detail of project.details){
+        const detailNode = document.createElement("li");
+        detailNode.innerHTML = detail;
+        detailListNode.appendChild(detailNode);
+    }
 }
 
 /**
@@ -78,4 +80,5 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
- loadComments();
+populateDetails();
+loadComments();
