@@ -9,7 +9,7 @@ header {
   & > #wordmark {
     font-family: Montserrat;
     font-size: 30px;
-    color: black;
+    color: var(--text-color);
     font-weight: 600;
     animation: wordmark-entry 1s forwards ease-out;
 
@@ -28,6 +28,7 @@ header {
   & > nav {
     display: flex;
     flex-direction: row;
+    align-items: center;
     animation: nav-entry 1s forwards ease-out;
 
     @keyframes nav-entry {
@@ -39,6 +40,11 @@ header {
         margin-right: 0px;
         opacity: 1;
       }
+    }
+
+    & > #theme-toggle{
+        color: var(--text-color);
+        cursor: pointer;
     }
 
     & > a {
@@ -56,7 +62,7 @@ header {
         width: 0px;
         border-radius: 1px;
 
-        background: #4ce2b5;
+        background: var(--accent-color);
 
         transition: width 0.2s;
       }
@@ -68,7 +74,7 @@ header {
       & > .title {
         font-family: Montserrat;
         font-size: 24px;
-        color: black;
+        color: var(--text-color);
         font-weight: 500;
       }
     }

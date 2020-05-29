@@ -13,16 +13,60 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * Local storage key names.
+ * @readonly
+ * @enum {string}
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+const DATA = {
+    colorTheme: 'color-theme'
 }
+
+/**
+ * Color themes that can be used for the website.
+ * @readonly
+ * @enum {string} 
+ */
+const COLOR_THEMES = {
+    dark: 'dark',
+    light: 'light'
+}
+
+/**
+ * The color theme currently being used.
+ * This is used to set a html-level class, which is used to enable css variables used by all elements.
+ * Defaults to light.
+ * @type {COLOR_THEMES}
+ */
+let colorTheme = localStorage.getItem(DATA.colorTheme) || COLOR_THEMES.light;
+
+/**
+ * Switch the current color theme.
+ * @return {undefined}
+ */
+function toggleTheme(){
+    const {dark, light} = COLOR_THEMES;
+    colorTheme = colorTheme ===  light ? dark : light;
+    setTheme(colorTheme);
+}
+
+/**
+ * Set color theme based on current colorTheme state.
+ * Sets theme by toggling "dark" class on html element.
+ * Also persists theme to localStorage.
+ * @return {undefined}
+ */
+function setTheme(){
+    const {dark, light} = COLOR_THEMES;
+    const htmlNode = document.querySelector('html');
+
+    if(colorTheme === dark){
+        htmlNode.classList.add(dark);
+    }else{
+        htmlNode.classList.remove(dark);
+    }
+
+    localStorage.setItem(DATA.colorTheme, colorTheme);
+}
+
+/** Initialize color theme. */
+setTheme();

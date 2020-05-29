@@ -24,6 +24,11 @@ main#landing {
 
     opacity: 0;
     z-index: 100;
+
+    .dark & {
+        mix-blend-mode: overlay;
+    }
+
     @keyframes hero-entry {
       from {
         bottom: -120px;
