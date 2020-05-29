@@ -33,7 +33,7 @@ for(let detail of project.detail){
  * This is a proof-of-concept, and will be replaced by a more complicated and useful method.
  */
 async function loadServerMessage(){
-    /** For now we espect to get response <h1>Hello Jay!</h1>*/
+    /** For now we expect to get response <h1>Hello Jay!</h1>*/
     const response = await fetch("/data");
     const message = await response.text();
 
