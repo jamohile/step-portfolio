@@ -17,8 +17,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.gson.Gson;
@@ -36,66 +37,41 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/projects")
 public class ProjectsServlet extends HttpServlet {
 
+  /** Get one or many projects. (based on whether projectId query param present)*/
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String json = "";
+    /** May be null */
     String projectId = request.getParameter("projectId");
-    System.out.println(projectId);
+
+    /** Presence of projectId flag determines whether to return one or many projects. */
     if(projectId == null){
         json = this.getAllProjectsJson();
     } else {
-        //json = this.getProjectJson(projectId);
+        try {
+            json = this.getOneProjectJson(Long.parseLong(projectId));
+        } catch (Exception badRequest) {
+            /** Client sent bad projectId */
+            response.setStatus(400);
+            response.getWriter().println("Invalid project ID.");
+            return;
+        }
     }
+    response.setContentType("application/json");
     response.getWriter().println(json);
-    // /**
-    //  * The number of comments we should load. This might be "undefined", indicating load all.
-    //  * We keep it as a string to allow for this possibility.
-    //  */
-    // String commentsCount = request.getParameter("commentsCount");
-
-    // /** 
-    //  * Get comments from datastore. 
-    //  * Filter to only show comments for a particular project.
-    // */
-    // Query commentsQuery = new Query("Comment")
-    //                         .addSort("timestamp", Query.SortDirection.DESCENDING)
-    //                         .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
-    // /** Load query. */
-    // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // PreparedQuery commentResults = datastore.prepare(commentsQuery);
-
-    // /**
-    //  * Apply limit if necessary. 
-    //  * Use offset 0 so that we can have a default options if try/catch fails.
-    //  */
-    // FetchOptions options = FetchOptions.Builder.withOffset(0);
-    // try {
-    //     Integer limit = Integer.parseInt(commentsCount);
-    //     options = options.limit(limit);
-    // } catch (NumberFormatException expectedIfNoLimit){
-    //     /** Don't set limit if not needed. */
-    // }
-
-    // /** Use query to populate a list of Comment objects. */
-    // ArrayList<Comment> comments = new ArrayList<Comment>();
-    
-    // for (Entity entity : commentResults.asIterable(options)) {
-    //     long id = entity.getKey().getId();
-    //     String message = (String) entity.getProperty("message");
-    //     long timestamp = (long) entity.getProperty("timestamp");
-
-    //     Comment comment = new Comment(id, message, projectId, timestamp);
-    //     comments.add(comment);
-    // }
-
-    // /** Send JSON encoded list of comments. */
-    // Gson gson = new Gson();
-    // String json = gson.toJson(comments);
-
-    // response.setContentType("application/json");
-    // response.getWriter().println(json);
   }
 
+  /* Get JSON for a single project by id. */
+  String getOneProjectJson(long projectId) throws EntityNotFoundException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Key projectKey = KeyFactory.createKey("Project", projectId);
+    Entity projectEntity = datastore.get(projectKey);
+
+    Gson gson = new Gson();
+    return gson.toJson(this.getProjectFromEntity(projectEntity));
+  }
+
+  /** Get JSON for all projects. */
   String getAllProjectsJson() {
 
     /** 
@@ -107,18 +83,20 @@ public class ProjectsServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery projectResults = datastore.prepare(projectsQuery);
 
-    Gson gson = new Gson();
-
     /** Use query to populate a list of Project objects. */
     ArrayList<Project> projects = new ArrayList<Project>();
-    
     for (Entity entity : projectResults.asIterable()) {
-        projects.add(new Project(entity));
+        projects.add(this.getProjectFromEntity(entity));
     }
+
+    Gson gson = new Gson();
     return gson.toJson(projects);
   }
 
+  /** Get a project class from a datastore entity. */
   Project getProjectFromEntity(Entity entity) {
+    Gson gson = new Gson();
+
     long id = entity.getKey().getId();
 
     String name = (String) entity.getProperty("name");
