@@ -113,27 +113,30 @@ public class ProjectsServlet extends HttpServlet {
     ArrayList<Project> projects = new ArrayList<Project>();
     
     for (Entity entity : projectResults.asIterable()) {
-        long id = entity.getKey().getId();
-
-        String name = (String) entity.getProperty("name");
-        String description = (String) entity.getProperty("description");
-        /** The remaining properties are lists. GSON needs additional type information to properly decode these. */
-        List<String> tags = gson.fromJson(
-            (String) entity.getProperty("tags"), 
-            new TypeToken<ArrayList<String>>(){}.getType()
-        );
-        List<String> details = gson.fromJson(
-            (String) entity.getProperty("details"), 
-            new TypeToken<ArrayList<String>>(){}.getType()
-        );
-        List<Project.ProjectLink> links = gson.fromJson(
-            (String) entity.getProperty("links"), 
-            new TypeToken<ArrayList<Project.ProjectLink>>(){}.getType()
-        );
-
-        Project project = new Project(id, name, description, tags, details, links);
-        projects.add(project);
+        projects.add(new Project(entity));
     }
     return gson.toJson(projects);
+  }
+
+  Project getProjectFromEntity(Entity entity) {
+    long id = entity.getKey().getId();
+
+    String name = (String) entity.getProperty("name");
+    String description = (String) entity.getProperty("description");
+    /** The remaining properties are lists. GSON needs additional type information to properly decode these. */
+    List<String> tags = gson.fromJson(
+        (String) entity.getProperty("tags"), 
+        new TypeToken<ArrayList<String>>(){}.getType()
+    );
+    List<String> details = gson.fromJson(
+        (String) entity.getProperty("details"), 
+        new TypeToken<ArrayList<String>>(){}.getType()
+    );
+    List<Project.ProjectLink> links = gson.fromJson(
+        (String) entity.getProperty("links"), 
+        new TypeToken<ArrayList<Project.ProjectLink>>(){}.getType()
+    );
+
+    return new Project(id, name, description, tags, details, links);
   }
 }
