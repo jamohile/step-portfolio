@@ -10,4 +10,10 @@ main#project-detail {
         font-family: Montserrat;
         color: var(--text-color);
     }
+
+    & > #project-links {
+        &.hidden {
+            display: none;
+        }
+    }
 }
