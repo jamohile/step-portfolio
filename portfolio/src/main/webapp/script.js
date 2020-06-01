@@ -13,19 +13,39 @@
 // limitations under the License.
 
 /**
- * The color theme currently being used for the website. 
+ * Local storage key names.
+ * @readonly
+ * @enum {string}
+ */
+const DATA = {
+    colorTheme: 'color-theme'
+}
+
+/**
+ * Color themes that can be used for the website.
+ * @readonly
+ * @enum {string} 
+ */
+const COLOR_THEMES = {
+    dark: 'dark',
+    light: 'light'
+}
+
+/**
+ * The color theme currently being used.
  * This is used to set a html-level class, which is used to enable css variables used by all elements.
  * Defaults to light.
- * @type {"dark" | "light"}
+ * @type {COLOR_THEMES}
  */
-let colorTheme = localStorage.getItem("color-theme") || "light";
+let colorTheme = localStorage.getItem(DATA.colorTheme) || COLOR_THEMES.light;
 
 /**
  * Switch the current color theme.
  * @return {undefined}
  */
 function toggleTheme(){
-    colorTheme = colorTheme === "light" ? "dark" : "light";
+    const {dark, light} = COLOR_THEMES;
+    colorTheme = colorTheme ===  light ? dark : light;
     setTheme(colorTheme);
 }
 
@@ -36,15 +56,16 @@ function toggleTheme(){
  * @return {undefined}
  */
 function setTheme(){
-    const htmlNode = document.querySelector("html");
+    const {dark, light} = COLOR_THEMES;
+    const htmlNode = document.querySelector('html');
 
-    if(colorTheme === "dark"){
-        htmlNode.classList.add("dark");
+    if(colorTheme === dark){
+        htmlNode.classList.add(dark);
     }else{
-        htmlNode.classList.remove("dark");
+        htmlNode.classList.remove(dark);
     }
 
-    localStorage.setItem("color-theme", colorTheme);
+    localStorage.setItem(DATA.colorTheme, colorTheme);
 }
 
 /** Initialize color theme. */
