@@ -14,7 +14,10 @@
 
 package com.google.sps.data;
 
-/** A comment on a project. */
+/** 
+ * A comment on a project.
+ * This is used only for JSON serialization when sending datastore comments to the user.
+ */
 public final class Comment {
 
   private final long id;
