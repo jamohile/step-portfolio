@@ -23,8 +23,8 @@ const project = projectsObject[projectId];
 console.assert(project !== undefined);
 
 /** Fill in information for this project. */
-document.querySelector("#name").innerHTML = project.name;
-document.querySelector("#description").innerHTML = project.description;
+document.querySelector("#name").innerHTML = window.DOMPurify.sanitize(project.name, {ALLOWED_TAGS: []});
+document.querySelector("#description").innerHTML = window.DOMPurify.sanitize(project.description, {ALLOWED_TAGS: []});
 
 /** A bullet-list of details about this project. */
 const detailListNode = document.querySelector("#detail");
