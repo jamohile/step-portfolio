@@ -100,7 +100,7 @@ public class CommentsServlet extends HttpServlet {
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
     long timestamp = System.currentTimeMillis();
-    String email = request.getUserPrincipal().getEmail();
+    String email = request.getUserPrincipal().getName();
 
     /** Create and set properties for a new comment in datastore. */
     Entity commentEntity = new Entity("Comment");

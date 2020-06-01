@@ -58,6 +58,12 @@ main#project-detail {
         margin-bottom: 8px;
         border-radius: 4px;
 
+        & > .email {
+          font-size: 12px;
+          font-family: Montserrat;
+          color: var(--comment-text-color);
+          font-weight: 600;
+        }
         & > .message {
           font-size: 12px;
           font-family: Montserrat;
