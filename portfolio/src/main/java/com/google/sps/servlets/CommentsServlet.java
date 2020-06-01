@@ -89,6 +89,12 @@ public class CommentsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /** Only allow comment creation when logged in. **/
+    if(request.getUserPrincipal() == null) {
+        response.setStatus(401);
+        return;
+    }
+
     /** Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
