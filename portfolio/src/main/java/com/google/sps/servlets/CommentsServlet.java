@@ -28,27 +28,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** 
+ * Handles serving and creating comments through GET and POST respectively. 
+ * All requests must be accompanied by a projectId query-param, as comments are many-to-one to projects.
+ * Only comments for the requested project will be served.
+ */
 @WebServlet("/comments")
 public class CommentsServlet extends HttpServlet {
 
+  /**
+   * Serve a JSON array of all comments for the specified projectId.
+   * TODO: Add error response if no projectId is provided.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String projectId = request.getParameter("projectId");
 
-    /** 
+    /* 
      * Get comments from datastore. 
      * Filter to only show comments for this project.
      */
     Query commentsQuery = new Query("Comment")
                             .addSort("timestamp", Query.SortDirection.DESCENDING)
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
-    /** Load query. */
+    /* Load query. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
-    /** Use query to populate a list of Comment objects. */
+    /* Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
     for (Entity entity : commentResults.asIterable()) {
         long id = entity.getKey().getId();
@@ -59,7 +67,7 @@ public class CommentsServlet extends HttpServlet {
         comments.add(comment);
     }
 
-    /** Send JSON encoded list of comments. */
+    /* Send JSON encoded list of comments. */
     Gson gson = new Gson();
     String json = gson.toJson(comments);
 
@@ -67,24 +75,29 @@ public class CommentsServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  /**
+   * Takes a projectId and message (as query params) and stores a comment.
+   * Upon successful save, the client is redirected back to the relevant project detail page.
+   * TODO: Add error responses.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    /** Extract comment properties from request. */
+    /* Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
     long timestamp = System.currentTimeMillis();
 
-    /** Create and set properties for a new comment in datastore. */
+    /* Create and set properties for a new comment in datastore. */
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("projectId", projectId);
     commentEntity.setProperty("timestamp", timestamp);
 
-    /** Save to datastore. */
+    /* Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
     
-    /** Redirect client back to original project page. */
+    /* Redirect client back to original project page. */
     String redirectUrl = "/project-detail.html?projectId=" + projectId; 
     response.sendRedirect(redirectUrl);
   }
