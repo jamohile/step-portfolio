@@ -74,8 +74,9 @@ public class CommentsServlet extends HttpServlet {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
         long timestamp = (long) entity.getProperty("timestamp");
+        String email = (String) entity.getProperty("email");
 
-        Comment comment = new Comment(id, message, projectId, timestamp);
+        Comment comment = new Comment(id, message, projectId, timestamp, email);
         comments.add(comment);
     }
 
@@ -99,12 +100,14 @@ public class CommentsServlet extends HttpServlet {
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
     long timestamp = System.currentTimeMillis();
+    String email = request.getUserPrincipal().getEmail();
 
     /** Create and set properties for a new comment in datastore. */
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("projectId", projectId);
     commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("email", email);
 
     /** Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
