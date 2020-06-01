@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   /** A simple list of text-only comments. */
-  ArrayList<String> comments = new ArrayList<String>();
+  private ArrayList<String> comments = new ArrayList<String>();
 
   public DataServlet(){
       super();
