@@ -1,5 +1,7 @@
 import projectsObject from "./projects-object.js";
 
+import {Comment} from "./comments.js";
+
 /**
  * To get the displayed project, must recieve a URL param with desired project id.
  * @type {string}
@@ -29,16 +31,13 @@ for(let detail of project.detail){
 }
 
 /**
- * A simple example of loading data from the server.
- * This is a proof-of-concept, and will be replaced by a more complicated and useful method.
+ * Load comments from the server, then display.
+ * @return {Promise<undefined>}
  */
-async function loadServerMessage(){
-    /** For now we expect to get response <h1>Hello Jay!</h1>*/
-    const response = await fetch("/data");
-    const message = await response.text();
+ async function loadComments(){
+     const response = await fetch("/data");
+     const comments = await response.json();
+     Comment.populateAll(comments);
+ }
 
-    /** This is just a temporary place to put this message. */
-    document.querySelector("#comments-list").innerHTML = message;
-}
-
-loadServerMessage();
+ loadComments();
