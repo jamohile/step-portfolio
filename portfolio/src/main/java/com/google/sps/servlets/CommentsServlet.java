@@ -21,6 +21,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
@@ -43,6 +46,14 @@ public class CommentsServlet extends HttpServlet {
      * We keep it as a string to allow for this possibility.
      */
     String commentsCount = request.getParameter("commentsCount");
+
+    /**
+     * The desired output language code in ISO-639-1 format.
+     */
+    String languageCode = request.getParameter("languageCode");
+    if (languageCode == null) {
+        languageCode = "en";
+    } 
 
     /** 
      * Get comments from datastore. 
@@ -69,14 +80,23 @@ public class CommentsServlet extends HttpServlet {
 
     /** Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
-    
+
+    /** Comments may require translation. For now do it simply, improve later. */
+    Translate translate = TranslateOptions.getDefaultInstance().getService();
+
+    /** Add translated queries for response */
     for (Entity entity : commentResults.asIterable(options)) {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
         long timestamp = (long) entity.getProperty("timestamp");
         String email = (String) entity.getProperty("email");
 
-        Comment comment = new Comment(id, message, projectId, timestamp, email);
+        Translation translation = translate.translate(
+            message,
+            Translate.TranslateOption.targetLanguage(languageCode)
+        );
+
+        Comment comment = new Comment(id, translation.getTranslatedText(), projectId, timestamp, email);
         comments.add(comment);
     }
 
