@@ -53,7 +53,7 @@ for(let detail of project.detail){
 
 /** Delete all comments for this project, then reload. */
 async function deleteComments(){
-    await await fetch(`/comments?projectId=${projectId}`, {
+    await fetch(`/comments?projectId=${projectId}`, {
         method: "DELETE"
     });
 
