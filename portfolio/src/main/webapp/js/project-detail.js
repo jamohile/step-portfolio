@@ -40,7 +40,6 @@ for(let detail of project.detail){
      Comment.populateAll(comments);
  }
 
-
 /** Methods to hide/show new comment form and related buttons. */
 class NewCommentForm {
     /** @const */
@@ -75,4 +74,4 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
- loadComments();
+loadComments();
