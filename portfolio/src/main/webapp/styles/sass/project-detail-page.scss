@@ -11,20 +11,84 @@ main#project-detail {
     color: var(--text-color);
   }
 
-  & #comments-list {
+  & > section#comments {
     max-width: 300px;
 
-    & > .comment {
-      background: var(--comment-bg-color);
+    & > #header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
 
-      padding: 8px;
+      width: 100%;
       margin-bottom: 8px;
+
+      & > h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      & > .controls {
+        &:hover{
+            cursor: pointer;
+        }
+        &.hidden {
+          display: none;
+        }
+      }
+    }
+
+    & #comments-list {
+      margin-top: 8px;
+
+      & > .comment {
+        background: var(--comment-bg-color);
+
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+
+        & > .message {
+          font-size: 12px;
+          font-family: Montserrat;
+          color: var(--comment-text-color);
+        }
+      }
+    }
+
+    & > form#new-comment {
+      background: var(--comment-bg-color);
       border-radius: 4px;
 
-      & > .message {
-        font-size: 12px;
+      padding: 8px;
+
+      display: flex;
+      flex-direction: column;
+
+      &.hidden {
+        display: none;
+      }
+
+      & > textarea {
+        background: none;
+        border: none;
+
         font-family: Montserrat;
         color: var(--comment-text-color);
+      }
+
+      & > input[type="submit"] {
+        background: var(--tag-bg-color);
+        border: none;
+        border-radius: 2px;
+
+        font-family: Montserrat;
+        font-weight: 600;
+        color: var(--text-color);
+
+        padding: 4px;
+        margin-left: auto;
+        margin-top: 4px;
       }
     }
   }

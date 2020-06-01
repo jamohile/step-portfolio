@@ -26,16 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  /** A temporary set of comments that we will hardcode. */
-  ArrayList<String> comments = new ArrayList<String>();
+  /** A simple list of text-only comments. */
+  private ArrayList<String> comments = new ArrayList<String>();
 
   public DataServlet(){
       super();
-      comments.add("Great work!");
-      comments.add("But does it come in red?");
-      comments.add("I did that too.");
   }
 
+  /** Get all comments, not distinguishing between projects for now. */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     /** Send JSON encoded list of comments. */
@@ -44,5 +42,18 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("application/json");
     response.getWriter().println(json);
+  }
+
+  /** Add a new comment, bound to a particular project. */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String message = request.getParameter("message");
+    String projectId = request.getParameter("projectId");
+
+    comments.add(message);
+    
+    /** Redirect client back to original project page. */
+    String redirectUrl = "/project-detail.html?projectId=" + projectId; 
+    response.sendRedirect(redirectUrl);
   }
 }
