@@ -62,4 +62,34 @@ export class Comment {
             Comment.comments.push(new Comment(id, message, projectId, timestamp));
         }
     }
+
+    /**
+     * Load comments from the server, then display.
+     * @return {Promise<undefined>}
+    */
+    static async loadAll(projectId, commentsCount){
+        /** Get comments for the current project. */
+        const response = await fetch(`/comments?projectId=${projectId}&commentsCount=${commentsCount}`);
+        /** @type {CommentData} */
+        const comments = await response.json();
+
+        /** Only show delete comments button if comments exist. */
+        const deleteCommentsFormNode = document.querySelector("#delete-comments");
+        if(comments.length > 0){
+            deleteCommentsFormNode.classList.remove("hidden");
+        } else {
+            deleteCommentsFormNode.classList.add("hidden");
+        }
+
+        Comment.populateAll(comments);
+    }
+
+    /** Delete all comments for this project, then reload. */
+    static async deleteAll(projectId, commentsCount){
+        await fetch(`/comments?projectId=${projectId}`, {
+            method: "DELETE"
+        });
+
+        Comment.loadAll(projectId, commentsCount);
+    }
 }
