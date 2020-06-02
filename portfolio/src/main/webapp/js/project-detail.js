@@ -36,7 +36,6 @@ for(let detail of project.detail){
     detailListNode.appendChild(detailNode);
 }
 
-
 document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
 
 /** Methods to hide/show new comment form and related buttons. */
@@ -73,6 +72,7 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
+
 /** Attach click handlers to all show comments buttons. */
 function getCommentButtonClickHandler (newCommentCount){
     return e => {
@@ -88,4 +88,5 @@ document.querySelector("#show-5").addEventListener("click", getCommentButtonClic
 document.querySelector("#show-15").addEventListener("click", getCommentButtonClickHandler(15));
 document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
 
- Comment.loadAll(projectId, commentsCount);
+Comment.loadAll(projectId, commentsCount);
+
