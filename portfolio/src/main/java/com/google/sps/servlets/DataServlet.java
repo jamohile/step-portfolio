@@ -14,7 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +26,34 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  /** A simple list of text-only comments. */
+  private ArrayList<String> comments = new ArrayList<String>();
+
+  public DataServlet(){
+      super();
+  }
+
+  /** Get all comments, not distinguishing between projects for now. */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello Jay!</h1>");
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /** Send JSON encoded list of comments. */
+    Gson gson = new Gson();
+    String json = gson.toJson(comments);
+
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
+
+  /** Add a new comment, bound to a particular project. */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String message = request.getParameter("message");
+    String projectId = request.getParameter("projectId");
+
+    comments.add(message);
+    
+    /** Redirect client back to original project page. */
+    String redirectUrl = "/project-detail.html?projectId=" + projectId; 
+    response.sendRedirect(redirectUrl);
   }
 }

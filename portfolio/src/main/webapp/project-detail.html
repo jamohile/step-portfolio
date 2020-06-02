@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Jay Mohile</title>
+    <link rel="stylesheet" href="styles/css/style.css">
+    <script src="script.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/c4ea62ac04.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header></header>
+
+    <main id="project-detail">
+        <h1 id="name">Project Name</h1>
+        <div id="description">Project Description</div>
+        <section>
+            <h2>Details</h2>
+            <ul id="detail">
+            </ul>
+        </section>
+        <section id="comments">
+            <div id="header">
+                <h2>Comments</h2>
+                <span id="show-comment-form-button" class="controls material-icons">add</span>
+                <span id="hide-comment-form-button" class="controls hidden material-icons">close</span>
+            </div>
+
+            <form id="new-comment" class="hidden" action="/data" method="post">
+                <textarea name="message" class="comment"  placeholder="Enter a comment."></textarea>
+                <input type="hidden" name="projectId"/>
+                <input type="submit" name="Post"/>
+            </form>
+
+            <div id="comments-list">
+                <template id="comment-template">
+                    <div class="comment">
+                        <div class="message">
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+        <div id="watermark">Projects.</div>
+    </main>
+
+    <!-- This must be included at the end, to allow above templates to be added to dom. -->
+    <script type="module" src="js/project-detail.js"></script>
+  </body>
+  <script src="/js/header.js"></script>
+</html>
