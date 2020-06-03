@@ -16,12 +16,17 @@ package com.google.sps.data;
 
 import java.util.List;
 
-/** A project that is part of the portfolio. */
+/** 
+ * A project that is part of the portfolio.
+ * This class is only used to Gson Serialize existing projects from datastore.
+ */
 public final class Project {
 
   /** A link from a project to a third party site. */
   public final class ProjectLink {
+    /** Displayed name of site/link */
     private final String name;
+    /** Actual fully qualified link */
     private final String href;
 
     public ProjectLink(String name, String href) {
@@ -30,11 +35,17 @@ public final class Project {
     }
   }
 
+  /** The unique data-store assigned id */
   private final long id;
+  /** The headline-displayed project name */
   private final String name;
+  /** A short < 1 sentence description of the project. **/
   private final String description;
+  /** All tags that this project is searchable under. */
   private final List<String> tags;
+  /** A list of additional 1+ sentence descriptions, shown in detail view. */
   private final List<String> details;
+  /** A list of links to third-party websites. (e.g Github, demo) */
   private final List<ProjectLink> links;
 
   public Project(long id, String name, String description, List<String> tags, List<String> details, List<ProjectLink> links) {
