@@ -15,6 +15,7 @@
 package com.google.sps;
 
 import com.google.sps.TimeRange;
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -62,6 +63,10 @@ public final class FindMeetingQuery {
         request
       );
 
+      if (containsMandatoryAttendees == false) {
+        continue;
+      }
+
       if (when.start() > blockExtent) { // This is a potential window.
         if (windowIsLongEnough(blockExtent, when.start(), request)) {
           timeSlots.add(
@@ -71,9 +76,7 @@ public final class FindMeetingQuery {
         }
       }
 
-      if (containsMandatoryAttendees) {
-        blockExtent = when.end();
-      }
+      blockExtent = Math.max(blockExtent, when.end());
     }
 
     /* At this point there are no more events, so remaining must be a potential window. */
