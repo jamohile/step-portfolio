@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.gson.Gson;
@@ -44,11 +46,16 @@ public class CommentsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String projectId = request.getParameter("projectId");
+    /**
+     * The number of comments we should load. This might be "undefined", indicating load all.
+     * We keep it as a string to allow for this possibility.
+     */
+    String commentsCount = request.getParameter("commentsCount");
 
     /* 
      * Get comments from datastore. 
-     * Filter to only show comments for this project.
-     */
+     * Filter to only show comments for a particular project.
+    */
     Query commentsQuery = new Query("Comment")
                             .addSort("timestamp", Query.SortDirection.DESCENDING)
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
@@ -56,9 +63,22 @@ public class CommentsServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
-    /* Use query to populate a list of Comment objects. */
+    /**
+     * Apply limit if necessary. 
+     * Use offset 0 so that we can have a default options if try/catch fails.
+     */
+    FetchOptions options = FetchOptions.Builder.withOffset(0);
+    try {
+        Integer limit = Integer.parseInt(commentsCount);
+        options = options.limit(limit);
+    } catch (NumberFormatException expectedIfNoLimit){
+        /** Don't set limit if not needed. */
+    }
+
+    /** Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
-    for (Entity entity : commentResults.asIterable()) {
+    
+    for (Entity entity : commentResults.asIterable(options)) {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
         long timestamp = (long) entity.getProperty("timestamp");
@@ -101,5 +121,31 @@ public class CommentsServlet extends HttpServlet {
     String redirectUrl = "/project-detail.html?projectId=" + projectId; 
     response.sendRedirect(redirectUrl);
   }
+
+  @Override
+  public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    String projectId = request.getParameter("projectId");
+    
+    /** 
+     * Get keys for all comments related to this projectId.
+     */
+    Query commentsQuery = new Query("Comment")
+                            .setKeysOnly()
+                            .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
+    /** Load query. */
+    PreparedQuery commentResults = datastore.prepare(commentsQuery);
+
+    /** Extract keys and delete. */
+    ArrayList<Key> commentKeys = new ArrayList<Key>();
+    for (Entity comment : commentResults.asIterable()) {
+        commentKeys.add(comment.getKey());
+    }
+
+    /** Convert commentKeys to a normal array so it can be used by datastore.delete varargs. */
+    datastore.delete(commentKeys.toArray(new Key[commentKeys.size()]));
+  }
+  
 }
 
