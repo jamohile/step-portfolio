@@ -52,9 +52,21 @@ public final class FindMeetingQuery {
      */
     int blockExtent = TimeRange.START_OF_DAY;
 
-    /** TODO: Add loop to go through shifts. */
+    for (Event event : sortedEvents) {
+      TimeRange when = event.getWhen();
+      if (when.start() > blockExtent) { // This is a potential window.
+        if (windowIsLongEnough(blockExtent, when.start(), request)) {
+          timeSlots.add(
+            /** Add non-inclusive window because it can't overlap with the start of this event. */
+            TimeRange.fromStartEnd(blockExtent, when.start(), false)
+          );
+        }
+      }
 
-    /** At this point there are no more shifts, so remaining must be a potential window. */
+      blockExtent = when.end();
+    }
+
+    /** At this point there are no more events, so remaining must be a potential window. */
     if (blockExtent < TimeRange.END_OF_DAY) {
       if (windowIsLongEnough(blockExtent, TimeRange.END_OF_DAY, request)) {
         timeSlots.add(
