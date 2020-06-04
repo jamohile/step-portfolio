@@ -12,14 +12,23 @@ export class Comment {
     static container = document.querySelector("#comments-list");
 
     /**
+     * @param {string} id
      * @param {string} message
+     * @param {string} projectId
+     * @param {number} timestamp
      */
-    constructor(message){
+    constructor(id, message, projectId, timestamp){
         /** Get root HTML node */
         this.node = Comment.template.content.cloneNode(true).querySelector(".comment");
 
         /** @private @const {string} */
+        this.id = id;
+        /** @private @const {string} */
         this.message = message;
+        /** @private @const {string} */
+        this.projectId = projectId;      
+        /** @private @const {number} */
+        this.timestamp = timestamp;
 
         this.render();
         
@@ -35,9 +44,13 @@ export class Comment {
         this.node.querySelector(".message").innerHTML = this.message;
     }
 
+    /**
+     * JSON data for a comment.
+     * @typedef {{id: string, message: string, projectId: string, timestamp: number}} CommentData
+     */
     /** 
      * Add all comments to the UI, replacing any existing.
-     * @param {string[]} comments
+     * @param {CommentData[]} comments
      * @return {undefined}
      */
     static populateAll(comments){
@@ -45,7 +58,9 @@ export class Comment {
         Comment.comments = [];
 
         for(let comment of comments){
-            Comment.comments.push(new Comment(comment));
+            const {id, message, projectId, timestamp} = comment;
+            Comment.comments.push(new Comment(id, message, projectId, timestamp));
         }
     }
 }
+
