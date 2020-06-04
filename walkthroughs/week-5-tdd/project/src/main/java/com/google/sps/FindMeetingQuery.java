@@ -38,15 +38,15 @@ public final class FindMeetingQuery {
     ArrayList<Event> sortedEvents = new ArrayList<>(events);
     sortedEvents.sort(EVENT_COMPARATOR);
 
-    /** 
+    /**
      * We consider this problem in terms of 'windows' and 'blocks'.
      * |-----A-----|                  |------A-----|
      *       |----------B-----|       |---B---|
-     * 
+     *
      * |______________________||______|
      *        block              window
-     * 
-     * We iterate shifts to identify the right-most extent of a block. 
+     *
+     * We iterate shifts to identify the right-most extent of a block.
      * If we find a shift that start *after* this point, the difference is a window.
      * That window is a possible meeting spot, if long enough.
      */
@@ -54,11 +54,26 @@ public final class FindMeetingQuery {
 
     /** TODO: Add loop to go through shifts. */
 
-    /** At this point there are no more shifts, so remaining must be a window. */
+    /** At this point there are no more shifts, so remaining must be a potential window. */
     if (blockExtent < TimeRange.END_OF_DAY) {
-        timeSlots.add(TimeRange.fromStartEnd(blockExtent, TimeRange.END_OF_DAY, true));
+      if (windowIsLongEnough(blockExtent, TimeRange.END_OF_DAY, request)) {
+        timeSlots.add(
+          TimeRange.fromStartEnd(blockExtent, TimeRange.END_OF_DAY, true)
+        );
+      }
     }
     return timeSlots;
+  }
+
+  /*
+   * Ensure a potential window is long enough to fit meet request.
+   * @param from     start of window in minutes.
+   * @param end      end of window in minutes.
+   * @param request  target meeting request.
+   * @return         whether window is long enough.
+   */
+  private boolean windowIsLongEnough(int from, int to, MeetingRequest request) {
+    return (to - from) >= (int) request.getDuration();
   }
 }
 
