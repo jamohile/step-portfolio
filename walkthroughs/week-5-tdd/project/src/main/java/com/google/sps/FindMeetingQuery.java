@@ -14,10 +14,31 @@
 
 package com.google.sps;
 
+import com.google.sps.TimeRange;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 
 public final class FindMeetingQuery {
-  public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+  /** Used to sort events by start time. */
+  public static final Comparator<Event> EVENT_COMPARATOR = new Comparator<Event>() {
+
+    @Override
+    public int compare(Event a, Event b) {
+      return TimeRange.ORDER_BY_START.compare(a.getWhen(), b.getWhen());
+    }
+  };
+
+  public Collection<TimeRange> query(
+    Collection<Event> events,
+    MeetingRequest request
+  ) {
+    ArrayList<TimeRange> timeSlots = new ArrayList<>();
+
+    ArrayList<Event> sortedEvents = new ArrayList<>(events);
+    sortedEvents.sort(EVENT_COMPARATOR);
+
+    return timeSlots;
   }
 }
+
