@@ -18,6 +18,8 @@ import com.google.sps.TimeRange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class FindMeetingQuery {
   /** Used to sort events by start time. */
@@ -38,7 +40,7 @@ public final class FindMeetingQuery {
     ArrayList<Event> sortedEvents = new ArrayList<>(events);
     sortedEvents.sort(EVENT_COMPARATOR);
 
-    /**
+    /*
      * We consider this problem in terms of 'windows' and 'blocks'.
      * |-----A-----|                  |------A-----|
      *       |----------B-----|       |---B---|
@@ -54,19 +56,27 @@ public final class FindMeetingQuery {
 
     for (Event event : sortedEvents) {
       TimeRange when = event.getWhen();
+      /** If true, this event can't be ignored. */
+      boolean containsMandatoryAttendees = attendeesAreMandatory(
+        event,
+        request
+      );
+
       if (when.start() > blockExtent) { // This is a potential window.
         if (windowIsLongEnough(blockExtent, when.start(), request)) {
           timeSlots.add(
-            /** Add non-inclusive window because it can't overlap with the start of this event. */
+            /* Add non-inclusive window because it can't overlap with the start of this event. */
             TimeRange.fromStartEnd(blockExtent, when.start(), false)
           );
         }
       }
 
-      blockExtent = when.end();
+      if (containsMandatoryAttendees) {
+        blockExtent = when.end();
+      }
     }
 
-    /** At this point there are no more events, so remaining must be a potential window. */
+    /* At this point there are no more events, so remaining must be a potential window. */
     if (blockExtent < TimeRange.END_OF_DAY) {
       if (windowIsLongEnough(blockExtent, TimeRange.END_OF_DAY, request)) {
         timeSlots.add(
@@ -77,7 +87,7 @@ public final class FindMeetingQuery {
     return timeSlots;
   }
 
-  /*
+  /**
    * Ensure a potential window is long enough to fit meet request.
    * @param from     start of window in minutes.
    * @param end      end of window in minutes.
@@ -86,6 +96,14 @@ public final class FindMeetingQuery {
    */
   private boolean windowIsLongEnough(int from, int to, MeetingRequest request) {
     return (to - from) >= (int) request.getDuration();
+  }
+
+  /** Whether this event contains people who must be present at the meeting.*/
+  private boolean attendeesAreMandatory(Event event, MeetingRequest request) {
+    Set<String> intersection = new HashSet<>(event.getAttendees());
+    /* Find only people present in both sets. */
+    intersection.retainAll(request.getAttendees());
+    return intersection.size() > 0;
   }
 }
 
