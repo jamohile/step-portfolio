@@ -93,3 +93,4 @@ export class Comment {
         Comment.loadAll(projectId, commentsCount);
     }
 }
+

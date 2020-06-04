@@ -72,7 +72,6 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
-
 /** Attach click handlers to all show comments buttons. */
 function getCommentButtonClickHandler (newCommentCount){
     return e => {
