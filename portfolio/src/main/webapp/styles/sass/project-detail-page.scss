@@ -91,5 +91,39 @@ main#project-detail {
         margin-top: 4px;
       }
     }
+
+    & > #controls {
+        display: flex;
+        flex-direction: row;
+
+        & > .control {
+            width: fit-content;
+            background: none;
+            border: none;
+
+            font-family: Montserrat;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: underline;
+            cursor: pointer;
+
+            padding: 0px;
+            margin-right: 8px;
+
+            &.hidden {
+                display: none;
+            }
+            &.selected {
+                font-weight: 600;
+            }
+        }    
+    }
+
+    & > #project-links {
+        &.hidden {
+            display: none;
+        }
+    }
   }
 }

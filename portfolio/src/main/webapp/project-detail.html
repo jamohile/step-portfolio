@@ -7,23 +7,10 @@
     <script src="script.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/c4ea62ac04.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <header>
-        <div id="wordmark" href="/">Jay Mohile</div>
-        <nav>
-            <span id="theme-toggle" class="material-icons" onclick="toggleTheme()">brightness_4</span>
-            <a href="/personal.html">
-                <div class="hover-indicator"></div>
-                <div class="title">Personal</div>
-            </a>
-            <a href="/projects.html">
-                <div class="hover-indicator"></div>
-                <div class="title" >Projects</div>
-            </a>
-        </nav>
-    </header>
+    <header></header>
 
     <main id="project-detail">
         <h1 id="name">Project Name</h1>
@@ -33,6 +20,11 @@
             <ul id="detail">
             </ul>
         </section>
+        <section id="project-links" class="hidden">
+            <h2>Links</h2>
+            <ul id="links">
+            </ul>
+          
         <section id="comments">
             <div id="header">
                 <h2>Comments</h2>
@@ -43,7 +35,7 @@
             <form id="new-comment" class="hidden" action="/comments" method="post">
                 <textarea name="message" class="comment"  placeholder="Enter a comment."></textarea>
                 <input type="hidden" name="projectId"/>
-                <input type="submit" name="Post"/>
+                <input type="submit" value="Post"/>
             </form>
 
             <div id="comments-list">
@@ -54,6 +46,12 @@
                     </div>
                 </template>
             </div>
+            <div id="controls">
+                <div id="show-5" class="selected control">Show 5</div>
+                <div id="show-15" class="control">Show 15</div>
+                <div id="show-all" class="control">Show All</div>
+                <div id="delete-comments" class="hidden control" type="submit">Delete All</div>
+            </div>
         </section>
         <div id="watermark">Projects.</div>
     </main>
@@ -61,4 +59,6 @@
     <!-- This must be included at the end, to allow above templates to be added to dom. -->
     <script type="module" src="js/project-detail.js"></script>
   </body>
+  <script src="/js/header.js"></script>
 </html>
+

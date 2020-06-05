@@ -1,10 +1,15 @@
 import {Comment} from "./comments.js";
 
+
 /**
- * To get the displayed project, must recieve a URL param with desired project id.
- * @type {string}
+ * To get the displayed project,
+ * must recieve a URL param with desired project id.
  */
-const projectId = new URLSearchParams(location.search).get("projectId");
+const query = new URLSearchParams(location.search);
+/** @type {string} */
+const projectId = query.get("projectId");
+/** @type {number | undefined} */
+let commentsCount = 5;
 
 /** Load data about this project from the server and populate UI items. */
 async function populateDetails() {
@@ -30,21 +35,33 @@ async function populateDetails() {
         detailNode.innerHTML = detail;
         detailListNode.appendChild(detailNode);
     }
-}
 
-/**
- * Load comments from the server, then display.
- * @return {Promise<undefined>}
- */
- async function loadComments(){
-     /** Get comments for the current project. */
-     const response = await fetch(`/comments?projectId=${projectId}`);
-     /** @type {CommentData} */
-     const comments = await response.json();
+  /** Similar to the list of details, create a list of links but only if present. */
+  const linkSectionNode = document.querySelector("#project-links");
+  if (project.links && project.links.length > 0) {
+      linkSectionNode.classList.remove("hidden");
 
-     Comment.populateAll(comments);
- }
+      const linkListNode = linkSectionNode.querySelector("#links");
 
+      for(let link of project.links){
+          const {name, href} = link;
+
+          /** Create link element. */
+          const linkNode = document.createElement("a");
+          linkNode.href = href;
+          linkNode.innerHTML = name;
+
+          /** Add link to UI. */
+          const listElementNode = document.createElement("li");
+          listElementNode.appendChild(linkNode);
+          linkListNode.appendChild(listElementNode);
+      }
+  } else{
+      linkSectionNode.classList.add("hidden");
+  }
+  }
+
+document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
 
 /** Methods to hide/show new comment form and related buttons. */
 class NewCommentForm {
@@ -80,5 +97,20 @@ class NewCommentForm {
 
 const newCommentForm = new NewCommentForm();
 
+/** Attach click handlers to all show comments buttons. */
+function getCommentButtonClickHandler (newCommentCount){
+    return e => {
+        /** Make all show comments buttons non-selected */
+        document.querySelectorAll("#controls > .control").forEach(e => e.classList.remove("selected"));
+        /** Make current comment button selected, and reload comments. */
+        e.currentTarget.classList.add("selected");
+        commentsCount = newCommentCount;
+        Comment.loadAll(projectId, commentsCount);
+    }
+}
+document.querySelector("#show-5").addEventListener("click", getCommentButtonClickHandler(5));
+document.querySelector("#show-15").addEventListener("click", getCommentButtonClickHandler(15));
+document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
+
+Comment.loadAll(projectId, commentsCount);
 populateDetails();
-loadComments();
