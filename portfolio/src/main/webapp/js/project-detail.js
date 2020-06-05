@@ -16,7 +16,8 @@ let commentsCount = 5;
 
 /**
  * All data about the current project.
- * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
+ * @typedef {{name: string, href: string}} ProjectLink
+ * @type {{id: string, name: string, description: string, detail: string[], tags: string[], links: ProjectLink[]}}
  */
 const project = projectsObject[projectId];
 
@@ -34,6 +35,30 @@ for(let detail of project.detail){
     const detailNode = document.createElement("li");
     detailNode.innerHTML = detail;
     detailListNode.appendChild(detailNode);
+}
+
+/** Similar to the list of details, create a list of links but only if present. */
+const linkSectionNode = document.querySelector("#project-links");
+if (project.links && project.links.length > 0) {
+    linkSectionNode.classList.remove("hidden");
+
+    const linkListNode = linkSectionNode.querySelector("#links");
+
+    for(let link of project.links){
+        const {name, href} = link;
+
+        /** Create link element. */
+        const linkNode = document.createElement("a");
+        linkNode.href = href;
+        linkNode.innerHTML = name;
+
+        /** Add link to UI. */
+        const listElementNode = document.createElement("li");
+        listElementNode.appendChild(linkNode);
+        linkListNode.appendChild(listElementNode);
+    }
+} else{
+    linkSectionNode.classList.add("hidden");
 }
 
 document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
@@ -88,4 +113,3 @@ document.querySelector("#show-15").addEventListener("click", getCommentButtonCli
 document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
 
 Comment.loadAll(projectId, commentsCount);
-
