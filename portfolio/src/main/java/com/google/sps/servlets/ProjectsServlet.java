@@ -52,7 +52,7 @@ public class ProjectsServlet extends HttpServlet {
             json = this.getOneProjectJson(Long.parseLong(projectId));
         } catch (Exception badRequest) {
             /** Client sent bad projectId */
-            response.setStatus(400);
+            response.setStatus(404);
             response.getWriter().println("Invalid project ID.");
             return;
         }
@@ -62,7 +62,7 @@ public class ProjectsServlet extends HttpServlet {
   }
 
   /* Get JSON for a single project by id. */
-  String getOneProjectJson(long projectId) throws EntityNotFoundException {
+  private String getOneProjectJson(long projectId) throws EntityNotFoundException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Key projectKey = KeyFactory.createKey("Project", projectId);
     Entity projectEntity = datastore.get(projectKey);
@@ -72,7 +72,7 @@ public class ProjectsServlet extends HttpServlet {
   }
 
   /** Get JSON for all projects. */
-  String getAllProjectsJson() {
+  private String getAllProjectsJson() {
 
     /** 
      * Get projects from datastore. 
@@ -94,7 +94,7 @@ public class ProjectsServlet extends HttpServlet {
   }
 
   /** Get a project class from a datastore entity. */
-  Project getProjectFromEntity(Entity entity) {
+  private Project getProjectFromEntity(Entity entity) {
     Gson gson = new Gson();
 
     long id = entity.getKey().getId();
