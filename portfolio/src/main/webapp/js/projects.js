@@ -118,7 +118,7 @@ class Project {
      */
     render(){
         this.node.querySelector(".name").innerHTML = this.name;
-        this.node.querySelector(".name").href = `/project-detail.html?id=${this.id}`;
+        this.node.querySelector(".name").href = `/project-detail.html?projectId=${this.id}`;
         this.node.querySelector(".description").innerHTML = this.description;
 
         /** Show a list of all tags this project has. */

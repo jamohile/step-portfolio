@@ -1,40 +1,46 @@
 html {
-    --bg-color: white;
-    --text-color: black;
-    --accent-color: #4CE2B5;
-    --watermark-color: #E6E6E6;
+  --bg-color: white;
+  --text-color: black;
+  --accent-color: #4ce2b5;
+  --watermark-color: #e6e6e6;
 
-    --tag-bg-color: #C4C4C4;
-    --tag-text-color: white;
+  --tag-bg-color: #c4c4c4;
+  --tag-text-color: white;
 
-    --tag-selected-bg-color: var(--accent-color);
-    --tag-selected-text-color: white;
+  --tag-selected-bg-color: var(--accent-color);
+  --tag-selected-text-color: white;
 
-    --project-name-color: var(--text-color);
-    --project-description-color: #787878;
+  --project-name-color: var(--text-color);
+  --project-description-color: #787878;
 
-    --project-tag-bg-color: var(--tag-bg-color);
-    --project-tag-text-color: var(--text-color);
+  --project-tag-bg-color: var(--tag-bg-color);
+  --project-tag-text-color: var(--text-color);
 
-    --project-tag-selected-bg-color: var(--accent-color);
-    --project-tag-selected-text-color: var(--project-tag-text-color);
+  --project-tag-selected-bg-color: var(--accent-color);
+  --project-tag-selected-text-color: var(--project-tag-text-color);
+
+  --comment-bg-color: #ececec;
+  --comment-text-color: var(--text-color);
 }
 
 html.dark {
-    --bg-color: #3B4151;
-    --text-color: white;
-    --watermark-color: #353A49;
+  --bg-color: #3b4151;
+  --text-color: white;
+  --watermark-color: #353a49;
 
-    --tag-bg-color: #56607B;
-    --tag-text-color: white;
+  --tag-bg-color: #56607b;
+  --tag-text-color: white;
 
-    --tag-selected-text-color: var(--bg-color);
+  --tag-selected-text-color: var(--bg-color);
 
-    --project-name-color: var(--text-color);
-    --project-description-color: var(--text-color);
+  --project-name-color: var(--text-color);
+  --project-description-color: var(--text-color);
 
-    --project-tag-bg-color: var(--tag-bg-color);
-    --project-tag-text-color: white;
+  --project-tag-bg-color: var(--tag-bg-color);
+  --project-tag-text-color: white;
 
-    --project-tag-selected-text-color: var(--bg-color);
+  --project-tag-selected-text-color: var(--bg-color);
+
+  --comment-bg-color: var(--project-tag-bg-color);
+  --comment-text-color: var(--project-tag-text-color);
 }

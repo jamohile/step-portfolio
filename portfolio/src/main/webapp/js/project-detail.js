@@ -1,10 +1,18 @@
 import projectsObject from "./projects-object.js";
 
+import {Comment} from "./comments.js";
+
+
 /**
- * To get the displayed project, must recieve a URL param with desired project id.
- * @type {string}
+ * To get the displayed project,
+ * must recieve a URL param with desired project id.
  */
-const projectId = new URLSearchParams(location.search).get("id");
+const query = new URLSearchParams(location.search);
+/** @type {string} */
+const projectId = query.get("projectId");
+/** @type {number | undefined} */
+let commentsCount = 5;
+
 
 /**
  * All data about the current project.
@@ -52,3 +60,56 @@ if (project.links && project.links.length > 0) {
 } else{
     linkSectionNode.classList.add("hidden");
 }
+
+document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
+
+/** Methods to hide/show new comment form and related buttons. */
+class NewCommentForm {
+    /** @const */
+    static formNode = document.querySelector("#new-comment");
+    /** @const */
+    static showFormButtonNode = document.querySelector("#show-comment-form-button");
+    /** @const */
+    static hideFormButtonNode = document.querySelector("#hide-comment-form-button");
+
+    constructor(){
+        NewCommentForm.showFormButtonNode.addEventListener("click", this.show);
+        NewCommentForm.hideFormButtonNode.addEventListener("click", this.hide);
+
+        /** Add current project ID to the form. */
+        NewCommentForm.formNode.querySelector("input[name=projectId]").value = projectId;
+    }
+
+    hide(){
+        NewCommentForm.formNode.classList.add("hidden");
+
+        NewCommentForm.showFormButtonNode.classList.remove("hidden");
+        NewCommentForm.hideFormButtonNode.classList.add("hidden");
+    }
+
+    show(){
+        NewCommentForm.formNode.classList.remove("hidden");
+
+        NewCommentForm.showFormButtonNode.classList.add("hidden");
+        NewCommentForm.hideFormButtonNode.classList.remove("hidden");
+    }
+}
+
+const newCommentForm = new NewCommentForm();
+
+/** Attach click handlers to all show comments buttons. */
+function getCommentButtonClickHandler (newCommentCount){
+    return e => {
+        /** Make all show comments buttons non-selected */
+        document.querySelectorAll("#controls > .control").forEach(e => e.classList.remove("selected"));
+        /** Make current comment button selected, and reload comments. */
+        e.currentTarget.classList.add("selected");
+        commentsCount = newCommentCount;
+        Comment.loadAll(projectId, commentsCount);
+    }
+}
+document.querySelector("#show-5").addEventListener("click", getCommentButtonClickHandler(5));
+document.querySelector("#show-15").addEventListener("click", getCommentButtonClickHandler(15));
+document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
+
+Comment.loadAll(projectId, commentsCount);
