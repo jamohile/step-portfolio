@@ -37,17 +37,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/comments")
 public class CommentsServlet extends HttpServlet {
 
+  /** 
+   * Get N comments for a given project. 
+   * Each comment is translated to the language indicated by query param languageCode, per ISO-639-1
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String projectId = request.getParameter("projectId");
-    /**
+    /*
      * The number of comments we should load. This might be "undefined", indicating load all.
      * We keep it as a string to allow for this possibility.
      */
     String commentsCount = request.getParameter("commentsCount");
 
-    /**
+    /*
      * The desired output language code in ISO-639-1 format.
      */
     String languageCode = request.getParameter("languageCode");
@@ -55,18 +59,18 @@ public class CommentsServlet extends HttpServlet {
         languageCode = "en";
     } 
 
-    /** 
+    /* 
      * Get comments from datastore. 
      * Filter to only show comments for a particular project.
     */
     Query commentsQuery = new Query("Comment")
                             .addSort("timestamp", Query.SortDirection.DESCENDING)
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
-    /** Load query. */
+    /* Load query. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
-    /**
+    /*
      * Apply limit if necessary. 
      * Use offset 0 so that we can have a default options if try/catch fails.
      */
@@ -78,13 +82,13 @@ public class CommentsServlet extends HttpServlet {
         /** Don't set limit if not needed. */
     }
 
-    /** Use query to populate a list of Comment objects. */
+    /* Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
 
-    /** Comments may require translation. For now do it simply, improve later. */
+    /* Comments may require translation. For now do it simply, improve later. */
     Translate translate = TranslateOptions.getDefaultInstance().getService();
 
-    /** Add translated queries for response */
+    /* Add translated queries for response */
     for (Entity entity : commentResults.asIterable(options)) {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
@@ -100,66 +104,71 @@ public class CommentsServlet extends HttpServlet {
         comments.add(comment);
     }
 
-    /** Send JSON encoded list of comments. */
+    /* Send JSON encoded list of comments. */
     Gson gson = new Gson();
     String json = gson.toJson(comments);
 
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
-
+  
+  /** 
+   * Create a new comment for a given project. Requires a user to be authenticated.
+   * The comment can be in any language, since they are all translated on the get-step.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    /** Only allow comment creation when logged in. **/
+    /* Only allow comment creation when logged in. **/
     if(request.getUserPrincipal() == null) {
         response.setStatus(401);
         return;
     }
 
-    /** Extract comment properties from request. */
+    /* Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
     long timestamp = System.currentTimeMillis();
     String email = request.getUserPrincipal().getName();
 
-    /** Create and set properties for a new comment in datastore. */
+    /* Create and set properties for a new comment in datastore. */
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
     commentEntity.setProperty("projectId", projectId);
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("email", email);
 
-    /** Save to datastore. */
+    /* Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
     
-    /** Redirect client back to original project page. */
+    /* Redirect client back to original project page. */
     String redirectUrl = "/project-detail.html?projectId=" + projectId; 
     response.sendRedirect(redirectUrl);
   }
 
+  /** Delete all comments for a given project. */
   @Override
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     String projectId = request.getParameter("projectId");
     
-    /** 
+    /* 
      * Get keys for all comments related to this projectId.
      */
     Query commentsQuery = new Query("Comment")
                             .setKeysOnly()
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
-    /** Load query. */
+    /* Load query. */
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
-    /** Extract keys and delete. */
+    /* Extract keys and delete. */
     ArrayList<Key> commentKeys = new ArrayList<Key>();
     for (Entity comment : commentResults.asIterable()) {
         commentKeys.add(comment.getKey());
     }
 
-    /** Convert commentKeys to a normal array so it can be used by datastore.delete varargs. */
+    /* Convert commentKeys to a normal array so it can be used by datastore.delete varargs. */
     datastore.delete(commentKeys.toArray(new Key[commentKeys.size()]));
   }
   
