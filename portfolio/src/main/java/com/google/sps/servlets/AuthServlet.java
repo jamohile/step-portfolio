@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 */
 @WebServlet("/auth")
 public class AuthServlet extends HttpServlet {
+    /** Used to get and Gson serialize a login link */
     class LoginRedirect {
+        /** Fully qualified login redirect url from Appengine Users api */
         private final String loginUrl;
         
         public LoginRedirect(String redirectUrl) {
@@ -39,7 +41,9 @@ public class AuthServlet extends HttpServlet {
             this.loginUrl = userService.createLoginURL(redirectUrl);
         }
     }
+    /** Used to get and Gson serialize a logout link */
     class LogoutRedirect {
+        /** Fully qualified logout redirect url from Appengine Users api */
         private final String logoutUrl;
         
         public LogoutRedirect(String redirectUrl) {
@@ -48,8 +52,8 @@ public class AuthServlet extends HttpServlet {
         }
     }
     /**
-     * Returns either status code 200, indicating user is authenticated,
-     * or status code 401 and an auth redirect url.
+     * Returns either status code 200 and json logout url, indicating user is authenticated,
+     * or status code 401 and a json login url.
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
@@ -83,3 +87,4 @@ public class AuthServlet extends HttpServlet {
         );
     }
 }
+
