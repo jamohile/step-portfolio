@@ -21,13 +21,13 @@ public final class Comment {
   private final String message;
   private final String projectId;
   private final long timestamp;
-  private final String email;
+  private final String displayName;
 
-  public Comment(long id, String message, String projectId, long timestamp, String email) {
+  public Comment(long id, String message, String projectId, long timestamp, String displayName) {
     this.id = id;
     this.message = message;
     this.projectId = projectId;
     this.timestamp = timestamp;
-	this.email = email;
+	  this.displayName = displayName;
   }
 }

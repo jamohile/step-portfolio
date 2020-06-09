@@ -74,9 +74,9 @@ public class CommentsServlet extends HttpServlet {
         long id = entity.getKey().getId();
         String message = (String) entity.getProperty("message");
         long timestamp = (long) entity.getProperty("timestamp");
-        String email = (String) entity.getProperty("email");
+        String displayName = (String) entity.getProperty("displayName");
 
-        Comment comment = new Comment(id, message, projectId, timestamp, email);
+        Comment comment = new Comment(id, message, projectId, timestamp, displayName);
         comments.add(comment);
     }
 
@@ -99,6 +99,7 @@ public class CommentsServlet extends HttpServlet {
     /** Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
+    String displayName = request.getParameter("displayName");
     long timestamp = System.currentTimeMillis();
     String email = request.getUserPrincipal().getName();
 
@@ -108,6 +109,7 @@ public class CommentsServlet extends HttpServlet {
     commentEntity.setProperty("projectId", projectId);
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("email", email);
+    commentEntity.setProperty("displayName", displayName);
 
     /** Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -144,3 +146,4 @@ public class CommentsServlet extends HttpServlet {
   }
   
 }
+

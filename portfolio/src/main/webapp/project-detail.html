@@ -40,6 +40,7 @@
             </div>
 
             <form id="new-comment" class="hidden" action="/comments" method="post">
+                <input name="displayName" placeholder="Enter a Display Name"/>
                 <textarea name="message" class="comment"  placeholder="Enter a comment."></textarea>
                 <input type="hidden" name="projectId"/>
                 <input type="submit" value="Post"/>
@@ -48,7 +49,7 @@
             <div id="comments-list">
                 <template id="comment-template">
                     <div class="comment">
-                        <div class="email"></div>
+                        <div class="displayName"></div>
                         <div class="message"></div>
                     </div>
                 </template>
@@ -67,3 +68,4 @@
     <script type="module" src="js/project-detail.js"></script>
   </body>
 </html>
+
