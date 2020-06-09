@@ -28,6 +28,11 @@ import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,11 +58,9 @@ public class CommentsServlet extends HttpServlet {
 
     /*
      * The desired output language code in ISO-639-1 format.
+     * Final because it is used in a lambda below.
      */
-    String languageCode = request.getParameter("languageCode");
-    if (languageCode == null) {
-        languageCode = "en";
-    } 
+    final String languageCode = request.getParameter("languageCode");
 
     /* 
      * Get comments from datastore. 
@@ -84,24 +87,63 @@ public class CommentsServlet extends HttpServlet {
 
     /* Use query to populate a list of Comment objects. */
     ArrayList<Comment> comments = new ArrayList<Comment>();
+    ArrayList<Entity> commentEntities = new ArrayList<Entity>();
 
-    /* Comments may require translation. For now do it simply, improve later. */
-    Translate translate = TranslateOptions.getDefaultInstance().getService();
+    /* Add entities to a list for convenient access later */
+    for (Entity entity: commentResults.asIterable(options)) {
+      commentEntities.add(entity);
+    }
+
+    /* Create a threadpool to perform multiple translations in parallel */
+    ExecutorService executor = Executors.newFixedThreadPool(10);
+    /* A list to hold pending translations in the order they were added. */
+    CompletableFuture<String>[] translationFutures = new CompletableFuture[commentEntities.size()];
+
+    /* Iterate entities and start a translation async for each */
+    for (int i = 0; i < commentEntities.size(); i++) {
+      Entity entity = commentEntities.get(i);
+      
+      /* Lambda expression that captures the entity, performs translation, returns translated message. */
+      Supplier<String> translationTask = () -> {
+        String message = (String) entity.getProperty("message"); 
+        
+        /* A new translation service is created each time because Translate may not be threadsafe.*/
+        Translate translate = TranslateOptions.getDefaultInstance().getService();
+        Translation translation = translate.translate(
+          message,
+          Translate.TranslateOption.targetLanguage(languageCode == null ? "en" : languageCode)
+        );
+        return translation.getTranslatedText();
+      };
+
+      translationFutures[i] = CompletableFuture.supplyAsync(translationTask, executor);
+    }
+
+    /* Block until all translations are complete.
+     * This isn't ideal but I'm willing to bet traffic isn't a huge problem. 
+     * For this site, fast load for one >>> handle many users.
+     */
+    CompletableFuture.allOf(translationFutures).join();
 
     /* Add translated queries for response */
-    for (Entity entity : commentResults.asIterable(options)) {
-        long id = entity.getKey().getId();
-        String message = (String) entity.getProperty("message");
-        long timestamp = (long) entity.getProperty("timestamp");
-        String email = (String) entity.getProperty("email");
+    for (int i = 0; i < commentEntities.size(); i++) {
+      Entity entity = commentEntities.get(i);
+      long id = entity.getKey().getId();
+      long timestamp = (long) entity.getProperty("timestamp");
+      String email = (String) entity.getProperty("email");
 
-        Translation translation = translate.translate(
-            message,
-            Translate.TranslateOption.targetLanguage(languageCode)
-        );
+      String translatedMessage = "";
+      try {
+        translatedMessage = translationFutures[i].get();
+      } catch (Exception unexpected) {
+        /* Really the only thing that can cause an error here is 
+         * .get() being called before the task is complete.
+         * That is taken care of by the .join() block above.
+         */
+      }
 
-        Comment comment = new Comment(id, translation.getTranslatedText(), projectId, timestamp, email);
-        comments.add(comment);
+      Comment comment = new Comment(id, translatedMessage, projectId, timestamp, email);
+      comments.add(comment);
     }
 
     /* Send JSON encoded list of comments. */
@@ -173,3 +215,4 @@ public class CommentsServlet extends HttpServlet {
   }
   
 }
+
