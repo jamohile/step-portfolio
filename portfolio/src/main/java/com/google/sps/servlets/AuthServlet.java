@@ -37,8 +37,7 @@ public class AuthServlet extends HttpServlet {
         private final String loginUrl;
         
         public LoginRedirect(String redirectUrl) {
- 	        UserService userService = UserServiceFactory.getUserService();
-            this.loginUrl = userService.createLoginURL(redirectUrl);
+            this.loginUrl = AuthServlet.this.userService.createLoginURL(redirectUrl);
         }
     }
     /** Used to get and Gson serialize a logout link */
@@ -47,10 +46,12 @@ public class AuthServlet extends HttpServlet {
         private final String logoutUrl;
         
         public LogoutRedirect(String redirectUrl) {
- 	        UserService userService = UserServiceFactory.getUserService();
-            this.logoutUrl = userService.createLogoutURL(redirectUrl);
+            this.logoutUrl = AuthServlet.this.userService.createLogoutURL(redirectUrl);
         }
     }
+    
+    private UserService userService = UserServiceFactory.getUserService();
+    
     /**
      * Returns either status code 200 and json logout url, indicating user is authenticated,
      * or status code 401 and a json login url.
