@@ -22,9 +22,9 @@ const project = projectsObject[projectId];
 
 console.assert(project !== undefined);
 
-/** Fill in information for this project. */
-document.querySelector("#name").innerHTML = project.name;
-document.querySelector("#description").innerHTML = project.description;
+/** Fill in information for this project, using CDN loaded XSS prevention library.*/
+document.querySelector("#name").innerHTML = window.DOMPurify.sanitize(project.name, {ALLOWED_TAGS: []});
+document.querySelector("#description").innerHTML = window.DOMPurify.sanitize(project.description, {ALLOWED_TAGS: []});
 
 /** A bullet-list of details about this project. */
 const detailListNode = document.querySelector("#detail");
@@ -38,39 +38,30 @@ for(let detail of project.detail){
 
 document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
 
-/** Methods to hide/show new comment form and related buttons. */
-class NewCommentForm {
-    /** @const */
-    static formNode = document.querySelector("#new-comment");
-    /** @const */
-    static showFormButtonNode = document.querySelector("#show-comment-form-button");
-    /** @const */
-    static hideFormButtonNode = document.querySelector("#hide-comment-form-button");
+/** Handle state of Comments Form.
+ *  Should only be shown when the user is logged in.
+ */
+const formNode = document.querySelector("#new-comment");
+const authButtonNode = document.querySelector("#auth-button");
 
-    constructor(){
-        NewCommentForm.showFormButtonNode.addEventListener("click", this.show);
-        NewCommentForm.hideFormButtonNode.addEventListener("click", this.hide);
+/** Get user's auth state. Only show form if logged in. */
+async function initializeCommentForm() {
+    const response = await fetch(`/auth?redirectUrl=${window.location.href}`);
+    const json = await response.json();
 
-        /** Add current project ID to the form. */
-        NewCommentForm.formNode.querySelector("input[name=projectId]").value = projectId;
-    }
-
-    hide(){
-        NewCommentForm.formNode.classList.add("hidden");
-
-        NewCommentForm.showFormButtonNode.classList.remove("hidden");
-        NewCommentForm.hideFormButtonNode.classList.add("hidden");
-    }
-
-    show(){
-        NewCommentForm.formNode.classList.remove("hidden");
-
-        NewCommentForm.showFormButtonNode.classList.add("hidden");
-        NewCommentForm.hideFormButtonNode.classList.remove("hidden");
+    if(response.status === 401){
+        // User is not logged in.
+        authButtonNode.href = json.loginUrl;
+        authButtonNode.innerHTML = "Login to comment";
+        formNode.classList.add("hidden");
+    } else if (response.status === 200) {
+        // User is logged in.
+        authButtonNode.href = json.logoutUrl;
+        authButtonNode.innerHTML = "Logout";
+        formNode.classList.remove("hidden");
+	    formNode.querySelector("input[name=projectId]").value = projectId;
     }
 }
-
-const newCommentForm = new NewCommentForm();
 
 /** Attach click handlers to all show comments buttons. */
 function getCommentButtonClickHandler (newCommentCount){
@@ -88,4 +79,5 @@ document.querySelector("#show-15").addEventListener("click", getCommentButtonCli
 document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
 
 Comment.loadAll(projectId, commentsCount);
+initializeCommentForm();
 

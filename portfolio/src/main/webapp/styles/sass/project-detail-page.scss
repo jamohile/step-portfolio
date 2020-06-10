@@ -35,6 +35,16 @@ main#project-detail {
         &.hidden {
           display: none;
         }
+
+        &#auth-button {
+            font-size: 14px;
+            font-family: Montserrat;
+            font-weight: 500;
+            padding: 0;
+            margin: 0;
+            background: none;
+            text-decoration: underline;
+        }
       }
     }
 
@@ -48,6 +58,12 @@ main#project-detail {
         margin-bottom: 8px;
         border-radius: 4px;
 
+        & > .email {
+          font-size: 12px;
+          font-family: Montserrat;
+          color: var(--comment-text-color);
+          font-weight: 600;
+        }
         & > .message {
           font-size: 12px;
           font-family: Montserrat;
@@ -69,7 +85,7 @@ main#project-detail {
         display: none;
       }
 
-      & > textarea {
+      & > input {
         background: none;
         border: none;
 
@@ -121,3 +137,4 @@ main#project-detail {
     }
   }
 }
+
