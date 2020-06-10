@@ -2,6 +2,7 @@ import projectsObject from "./projects-object.js";
 
 import {Comment} from "./comments.js";
 
+import languages from "./languages.js";
 
 /**
  * To get the displayed project,
@@ -10,9 +11,18 @@ import {Comment} from "./comments.js";
 const query = new URLSearchParams(location.search);
 /** @type {string} */
 const projectId = query.get("projectId");
-/** @type {number | undefined} */
+
+/**
+ * How many comments to display.
+ * @type {number | undefined}
+ */
 let commentsCount = 5;
 
+/**
+ * What language to display comments in.
+ * @type {string}
+ */
+let languageCode = "en";
 
 /**
  * All data about the current project.
@@ -36,7 +46,10 @@ for(let detail of project.detail){
     detailListNode.appendChild(detailNode);
 }
 
-document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
+document.querySelector("#delete-comments").addEventListener("click", async () => {
+    await Comment.deleteAll(projectId);
+    Comment.loadAll(projectId, commentsCount, languageCode);
+});
 
 /** Handle state of Comments Form.
  *  Should only be shown when the user is logged in.
@@ -71,13 +84,27 @@ function getCommentButtonClickHandler (newCommentCount){
         /** Make current comment button selected, and reload comments. */
         e.currentTarget.classList.add("selected");
         commentsCount = newCommentCount;
-        Comment.loadAll(projectId, commentsCount);
+        Comment.loadAll(projectId, commentsCount, languageCode);
     }
 }
 document.querySelector("#show-5").addEventListener("click", getCommentButtonClickHandler(5));
 document.querySelector("#show-15").addEventListener("click", getCommentButtonClickHandler(15));
 document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
 
-Comment.loadAll(projectId, commentsCount);
-initializeCommentForm();
+/** Add language options. */
+const languageSelectNode = document.querySelector("#set-language");
+for(let language of languages) {
+    const {name, code} = language;
+    const optionNode = document.createElement("option");
+    optionNode.innerHTML = name;
+    optionNode.value = code;
+    optionNode.selected = code === languageCode;
+    languageSelectNode.appendChild(optionNode);
+}
+languageSelectNode.addEventListener("change", e => {
+    languageCode = e.currentTarget.value;
+    Comment.loadAll(projectId, commentsCount, languageCode);
+});
 
+ Comment.loadAll(projectId, commentsCount, languageCode);
+ initializeCommentForm();

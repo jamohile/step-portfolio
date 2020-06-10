@@ -12,7 +12,7 @@ main#project-detail {
   }
 
   & > section#comments {
-    max-width: 300px;
+    max-width: 400px;
 
     & > #header {
       display: flex;
@@ -132,6 +132,13 @@ main#project-detail {
             }
             &.selected {
                 font-weight: 600;
+            }
+
+            &#set-language {
+                width: 0;
+                flex-grow: 1;
+                margin-right: 0px;
+                text-align-last: right;
             }
         }    
     }
