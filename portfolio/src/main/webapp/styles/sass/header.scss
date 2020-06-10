@@ -11,6 +11,8 @@ header {
     font-size: 30px;
     color: var(--text-color);
     font-weight: 600;
+    text-decoration: none;
+
     animation: wordmark-entry 1s forwards ease-out;
 
     @keyframes wordmark-entry {
@@ -42,9 +44,22 @@ header {
       }
     }
 
+    & > #social-links {
+        display: flex;
+        flex-direction: row;
+        margin-right: 30px;
+
+        & > a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin-left: 30px;
+        }
+    }
+
     & > #theme-toggle{
         color: var(--text-color);
         cursor: pointer;
+        margin-right: 30px;
     }
 
     & > a {

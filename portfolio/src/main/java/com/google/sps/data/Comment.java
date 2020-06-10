@@ -30,6 +30,16 @@ public final class Comment {
   /** The chosen display name of the user who made this comment.*/
   private final String displayName;
 
+  /**
+   * Get a new Comment for JSON serialization.
+   * This should only be used to serialize existing datastore entities.
+   * 
+   * @param id          datastore-generated unique id for this comment.
+   * @param message     main text of this message, in any language.
+   * @param projectId   projectId this comment is associated with.
+   * @param timestamp   comment creation date in MS since Epoch.
+   * @param displayName user chosen name to show, instead of their email.
+   */
   public Comment(long id, String message, String projectId, long timestamp, String displayName) {
     this.id = id;
     this.message = message;
