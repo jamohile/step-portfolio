@@ -37,6 +37,7 @@ public final class FindMeetingQuery {
     MeetingRequest request
   ) {
     ArrayList<TimeRange> timeSlots = new ArrayList<>();
+    ArrayList<TimeRange> timeSlotsWithOptional = new ArrayList<>();
 
     ArrayList<Event> sortedEvents = new ArrayList<>(events);
     sortedEvents.sort(EVENT_COMPARATOR);
@@ -53,41 +54,84 @@ public final class FindMeetingQuery {
      * If we find a shift that start *after* this point, the difference is a window.
      * That window is a possible meeting spot, if long enough.
      */
-    int blockExtent = TimeRange.START_OF_DAY;
+    int mandatoryBlockExtent = TimeRange.START_OF_DAY; // Based on people who *must* attend
+    int optionalBlockExtent = TimeRange.START_OF_DAY; // Based on people who *may* attend
+
+    int numMandatoryEvents = 0;
+    int numOptionalEvents = 0;
+
+    boolean considerMandatoryAttendees = request.getAttendees().size() > 0;
+    boolean considerOptionalAttendees = request.getOptionalAttendees().size() > 0;
 
     for (Event event : sortedEvents) {
       TimeRange when = event.getWhen();
       /** If true, this event can't be ignored. */
-      boolean containsMandatoryAttendees = attendeesAreMandatory(
+      boolean containsMandatoryAttendees = anyAttendeesAreMandatory(
+        event,
+        request
+      );
+      boolean containsOptionalAttendees = anyAttendeesAreOptional(
         event,
         request
       );
 
-      if (containsMandatoryAttendees == false) {
-        continue;
-      }
+      if (containsMandatoryAttendees) { numMandatoryEvents++; }
+      if (containsOptionalAttendees) { numOptionalEvents++; }
 
-      if (when.start() > blockExtent) { // This is a potential window.
-        if (windowIsLongEnough(blockExtent, when.start(), request)) {
+      boolean optionalWindowExists = when.start() > optionalBlockExtent;
+      boolean mandatoryWindowExists = when.start() > mandatoryBlockExtent;
+
+      boolean optionalWindowLongEnough = optionalWindowExists && windowIsLongEnough(optionalBlockExtent, when.start(), request);
+      boolean mandatoryWindowLongEnough = mandatoryWindowExists && windowIsLongEnough(mandatoryBlockExtent, when.start(), request);
+
+      if (considerOptionalAttendees && optionalWindowExists) { // This is a potential window.
+        if (optionalWindowLongEnough && mandatoryWindowLongEnough) {
+          timeSlotsWithOptional.add(
+            /* Add non-inclusive window because it can't overlap with the start of this event. */
+            TimeRange.fromStartEnd(
+              Math.max(optionalBlockExtent, mandatoryBlockExtent),
+              when.start(), false)
+          );
+        }
+      }
+      
+
+      if (containsMandatoryAttendees && mandatoryWindowExists) { // This is a potential window.
+        if (mandatoryWindowLongEnough) {
           timeSlots.add(
             /* Add non-inclusive window because it can't overlap with the start of this event. */
-            TimeRange.fromStartEnd(blockExtent, when.start(), false)
+            TimeRange.fromStartEnd(mandatoryBlockExtent, when.start(), false)
           );
         }
       }
 
-      blockExtent = Math.max(blockExtent, when.end());
+      if (containsOptionalAttendees) { // We group all optional attendees as one lump for now.
+        optionalBlockExtent = Math.max(optionalBlockExtent, when.end());
+      }
+      
+      if (containsMandatoryAttendees) {
+        mandatoryBlockExtent = Math.max(mandatoryBlockExtent, when.end());
+      }
     }
 
     /* At this point there are no more events, so remaining must be a potential window. */
-    if (blockExtent < TimeRange.END_OF_DAY) {
-      if (windowIsLongEnough(blockExtent, TimeRange.END_OF_DAY, request)) {
+    if (windowIsLongEnough(mandatoryBlockExtent, TimeRange.END_OF_DAY, request) && (numMandatoryEvents == 0 || mandatoryBlockExtent != 0)) {
+      if (considerMandatoryAttendees || (!considerMandatoryAttendees && !considerOptionalAttendees)) {
         timeSlots.add(
-          TimeRange.fromStartEnd(blockExtent, TimeRange.END_OF_DAY, true)
+          TimeRange.fromStartEnd(mandatoryBlockExtent, TimeRange.END_OF_DAY, true)
+        );
+      }
+      if (considerOptionalAttendees && windowIsLongEnough(optionalBlockExtent, TimeRange.END_OF_DAY, request) && (numOptionalEvents == 0 || optionalBlockExtent != 0)) {
+        timeSlotsWithOptional.add(
+          TimeRange.fromStartEnd(
+            Math.max(mandatoryBlockExtent, optionalBlockExtent), 
+            TimeRange.END_OF_DAY, true
+          )
         );
       }
     }
-    return timeSlots;
+
+    return timeSlotsWithOptional.size() > 0 ? timeSlotsWithOptional : timeSlots;
   }
 
   /**
@@ -102,10 +146,18 @@ public final class FindMeetingQuery {
   }
 
   /** Whether this event contains people who must be present at the meeting.*/
-  private boolean attendeesAreMandatory(Event event, MeetingRequest request) {
+  private boolean anyAttendeesAreMandatory(Event event, MeetingRequest request) {
     Set<String> intersection = new HashSet<>(event.getAttendees());
     /* Find only people present in both sets. */
     intersection.retainAll(request.getAttendees());
+    return intersection.size() > 0;
+  }
+
+  /** Whether this event contains people who may be present at the meeting.*/
+  private boolean anyAttendeesAreOptional(Event event, MeetingRequest request) {
+    Set<String> intersection = new HashSet<>(event.getAttendees());
+    /* Find only people present in both sets. */
+    intersection.retainAll(request.getOptionalAttendees());
     return intersection.size() > 0;
   }
 }
