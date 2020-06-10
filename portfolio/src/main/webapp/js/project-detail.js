@@ -32,7 +32,7 @@ const project = projectsObject[projectId];
 
 console.assert(project !== undefined);
 
-/** Fill in information for this project. */
+/** Fill in information for this project, using CDN loaded XSS prevention library.*/
 document.querySelector("#name").innerHTML = window.DOMPurify.sanitize(project.name, {ALLOWED_TAGS: []});
 document.querySelector("#description").innerHTML = window.DOMPurify.sanitize(project.description, {ALLOWED_TAGS: []});
 
@@ -45,7 +45,6 @@ for(let detail of project.detail){
     detailNode.innerHTML = detail;
     detailListNode.appendChild(detailNode);
 }
-
 
 document.querySelector("#delete-comments").addEventListener("click", async () => {
     await Comment.deleteAll(projectId);

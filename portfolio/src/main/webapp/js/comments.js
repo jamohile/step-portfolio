@@ -16,9 +16,9 @@ export class Comment {
      * @param {string} message
      * @param {string} projectId
      * @param {number} timestamp
-     * @param {string} email
+     * @param {string} displayName
      */
-    constructor(id, message, projectId, timestamp, email){
+    constructor(id, message, projectId, timestamp, displayName){
         /** Get root HTML node */
         this.node = Comment.template.content.cloneNode(true).querySelector(".comment");
 
@@ -31,7 +31,7 @@ export class Comment {
         /** @private @const {number} */
         this.timestamp = timestamp;
         /** @private @const {string} */
-        this.email = email;
+        this.displayName = displayName;
 
         this.render();
         
@@ -45,12 +45,12 @@ export class Comment {
      */
     render(){
         this.node.querySelector(".message").innerHTML = this.message;
-        this.node.querySelector(".email").innerHTML = this.email;
+        this.node.querySelector(".displayName").innerHTML = this.displayName;
     }
 
     /**
      * JSON data for a comment.
-     * @typedef {{id: string, message: string, projectId: string, timestamp: number, email: string}} CommentData
+     * @typedef {{id: string, message: string, projectId: string, timestamp: number, displayName: string}} CommentData
      */
     /** 
      * Add all comments to the UI, replacing any existing.
@@ -62,8 +62,8 @@ export class Comment {
         Comment.comments = [];
 
         for(let comment of comments){
-            const {id, message, projectId, timestamp, email} = comment;
-            Comment.comments.push(new Comment(id, message, projectId, timestamp, email));
+            const {id, message, projectId, timestamp, displayName} = comment;
+            Comment.comments.push(new Comment(id, message, projectId, timestamp, displayName));
         }
     }
 
@@ -95,3 +95,4 @@ export class Comment {
         });
     }
 }
+

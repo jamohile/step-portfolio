@@ -38,7 +38,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** 
+ * Handles serving and creating comments through GET and POST respectively. 
+ * All requests must be accompanied by a projectId query-param, as comments are many-to-one to projects.
+ * Only comments for the requested project will be served.
+ */
 @WebServlet("/comments")
 public class CommentsServlet extends HttpServlet {
 
@@ -153,7 +157,7 @@ public class CommentsServlet extends HttpServlet {
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
-  
+
   /** 
    * Create a new comment for a given project. Requires a user to be authenticated.
    * The comment can be in any language, since they are all translated on the get-step.
@@ -165,10 +169,11 @@ public class CommentsServlet extends HttpServlet {
         response.setStatus(401);
         return;
     }
-
+    
     /* Extract comment properties from request. */
     String message = request.getParameter("message");
     String projectId = request.getParameter("projectId");
+    String displayName = request.getParameter("displayName");
     long timestamp = System.currentTimeMillis();
     String email = request.getUserPrincipal().getName();
 
@@ -178,6 +183,7 @@ public class CommentsServlet extends HttpServlet {
     commentEntity.setProperty("projectId", projectId);
     commentEntity.setProperty("timestamp", timestamp);
     commentEntity.setProperty("email", email);
+    commentEntity.setProperty("displayName", displayName);
 
     /* Save to datastore. */
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

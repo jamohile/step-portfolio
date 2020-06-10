@@ -14,20 +14,38 @@
 
 package com.google.sps.data;
 
-/** A comment on a project. */
+/**
+ * A comment on a project.
+ * Used only for Gson serialization of existing datastore data.
+ */
 public final class Comment {
-
+  /** The unique datastore assigned id */
   private final long id;
+  /** The main written content of this comment. */
   private final String message;
+  /** The associated project Id */
   private final String projectId;
+  /** The time in ms since Epoch that this comment was created. Server generated. */
   private final long timestamp;
-  private final String email;
+  /** The chosen display name of the user who made this comment.*/
+  private final String displayName;
 
-  public Comment(long id, String message, String projectId, long timestamp, String email) {
+  /**
+   * Get a new Comment for JSON serialization.
+   * This should only be used to serialize existing datastore entities.
+   * 
+   * @param id          datastore-generated unique id for this comment.
+   * @param message     main text of this message, in any language.
+   * @param projectId   projectId this comment is associated with.
+   * @param timestamp   comment creation date in MS since Epoch.
+   * @param displayName user chosen name to show, instead of their email.
+   */
+  public Comment(long id, String message, String projectId, long timestamp, String displayName) {
     this.id = id;
     this.message = message;
     this.projectId = projectId;
     this.timestamp = timestamp;
-	this.email = email;
+	  this.displayName = displayName;
   }
 }
+
