@@ -207,7 +207,6 @@ public class CommentsServlet extends HttpServlet {
     Query commentsQuery = new Query("Comment")
                             .setKeysOnly()
                             .addFilter("projectId", Query.FilterOperator.EQUAL, projectId);
-    /* Load query. */
     PreparedQuery commentResults = datastore.prepare(commentsQuery);
 
     /* Extract keys and delete. */
