@@ -7,6 +7,8 @@
     <script src="script.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.0.11/purify.min.js" integrity="sha256-CttTBp3vqcw55O+XqmrPjeA17wiC1WxRnjIOeXwHu/s=" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/c4ea62ac04.js" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -28,11 +30,11 @@
         <section id="comments">
             <div id="header">
                 <h2>Comments</h2>
-                <span id="show-comment-form-button" class="controls material-icons">add</span>
-                <span id="hide-comment-form-button" class="controls hidden material-icons">close</span>
+                <a id="auth-button" class="auth-button controls"></a>
             </div>
 
             <form id="new-comment" class="hidden" action="/comments" method="post">
+                <input name="displayName" placeholder="Enter a Display Name"/>
                 <textarea name="message" class="comment"  placeholder="Enter a comment."></textarea>
                 <input type="hidden" name="projectId"/>
                 <input type="submit" value="Post"/>
@@ -41,8 +43,8 @@
             <div id="comments-list">
                 <template id="comment-template">
                     <div class="comment">
-                        <div class="message">
-                        </div>
+                        <div class="displayName"></div>
+                        <div class="message"></div>
                     </div>
                 </template>
             </div>
@@ -51,6 +53,8 @@
                 <div id="show-15" class="control">Show 15</div>
                 <div id="show-all" class="control">Show All</div>
                 <div id="delete-comments" class="hidden control" type="submit">Delete All</div>
+                <select id="set-language" class="control">
+                </select>
             </div>
         </section>
         <div id="watermark">Projects.</div>

@@ -14,35 +14,38 @@
 
 package com.google.sps.data;
 
-/** 
+/**
  * A comment on a project.
- * This is used only for JSON serialization when sending datastore comments to the user.
+ * Used only for Gson serialization of existing datastore data.
  */
 public final class Comment {
-  
-  /** Unique ID as assigned automatically by datastore. */
+  /** The unique datastore assigned id */
   private final long id;
-  /** The main text content of this comment */
+  /** The main written content of this comment. */
   private final String message;
-  /** The project this comment is associated with. */
+  /** The associated project Id */
   private final String projectId;
-  /** The time this comment was created, in ms since Epoch. */
+  /** The time in ms since Epoch that this comment was created. Server generated. */
   private final long timestamp;
+  /** The chosen display name of the user who made this comment.*/
+  private final String displayName;
 
   /**
    * Get a new Comment for JSON serialization.
    * This should only be used to serialize existing datastore entities.
    * 
-   * @param id         datastore-generated unique id for this comment.
-   * @param message    main text of this message, in any language.
-   * @param projectId  projectId this comment is associated with.
-   * @param timestamp  comment creation date in MS since Epoch.
+   * @param id          datastore-generated unique id for this comment.
+   * @param message     main text of this message, in any language.
+   * @param projectId   projectId this comment is associated with.
+   * @param timestamp   comment creation date in MS since Epoch.
+   * @param displayName user chosen name to show, instead of their email.
    */
-  public Comment(long id, String message, String projectId, long timestamp) {
+  public Comment(long id, String message, String projectId, long timestamp, String displayName) {
     this.id = id;
     this.message = message;
     this.projectId = projectId;
     this.timestamp = timestamp;
+	  this.displayName = displayName;
   }
 }
 

@@ -1,5 +1,6 @@
 import {Comment} from "./comments.js";
 
+import languages from "./languages.js";
 
 /**
  * To get the displayed project,
@@ -8,8 +9,18 @@ import {Comment} from "./comments.js";
 const query = new URLSearchParams(location.search);
 /** @type {string} */
 const projectId = query.get("projectId");
-/** @type {number | undefined} */
+
+/**
+ * How many comments to display.
+ * @type {number | undefined}
+ */
 let commentsCount = 5;
+
+/**
+ * What language to display comments in.
+ * @type {string}
+ */
+let languageCode = "en";
 
 /** Load data about this project from the server and populate UI items. */
 async function populateDetails() {
@@ -43,6 +54,10 @@ async function populateDetails() {
 
       const linkListNode = linkSectionNode.querySelector("#links");
 
+/** Fill in information for this project, using CDN loaded XSS prevention library.*/
+document.querySelector("#name").innerHTML = window.DOMPurify.sanitize(project.name, {ALLOWED_TAGS: []});
+document.querySelector("#description").innerHTML = window.DOMPurify.sanitize(project.description, {ALLOWED_TAGS: []});
+
       for(let link of project.links){
           const {name, href} = link;
 
@@ -61,41 +76,35 @@ async function populateDetails() {
   }
   }
 
-document.querySelector("#delete-comments").addEventListener("click", () => Comment.deleteAll(projectId, commentsCount));
+document.querySelector("#delete-comments").addEventListener("click", async () => {
+    await Comment.deleteAll(projectId);
+    Comment.loadAll(projectId, commentsCount, languageCode);
+});
 
-/** Methods to hide/show new comment form and related buttons. */
-class NewCommentForm {
-    /** @const */
-    static formNode = document.querySelector("#new-comment");
-    /** @const */
-    static showFormButtonNode = document.querySelector("#show-comment-form-button");
-    /** @const */
-    static hideFormButtonNode = document.querySelector("#hide-comment-form-button");
+/** Handle state of Comments Form.
+ *  Should only be shown when the user is logged in.
+ */
+const formNode = document.querySelector("#new-comment");
+const authButtonNode = document.querySelector("#auth-button");
 
-    constructor(){
-        NewCommentForm.showFormButtonNode.addEventListener("click", this.show);
-        NewCommentForm.hideFormButtonNode.addEventListener("click", this.hide);
+/** Get user's auth state. Only show form if logged in. */
+async function initializeCommentForm() {
+    const response = await fetch(`/auth?redirectUrl=${window.location.href}`);
+    const json = await response.json();
 
-        /** Add current project ID to the form. */
-        NewCommentForm.formNode.querySelector("input[name=projectId]").value = projectId;
-    }
-
-    hide(){
-        NewCommentForm.formNode.classList.add("hidden");
-
-        NewCommentForm.showFormButtonNode.classList.remove("hidden");
-        NewCommentForm.hideFormButtonNode.classList.add("hidden");
-    }
-
-    show(){
-        NewCommentForm.formNode.classList.remove("hidden");
-
-        NewCommentForm.showFormButtonNode.classList.add("hidden");
-        NewCommentForm.hideFormButtonNode.classList.remove("hidden");
+    if(response.status === 401){
+        // User is not logged in.
+        authButtonNode.href = json.loginUrl;
+        authButtonNode.innerHTML = "Login to comment";
+        formNode.classList.add("hidden");
+    } else if (response.status === 200) {
+        // User is logged in.
+        authButtonNode.href = json.logoutUrl;
+        authButtonNode.innerHTML = "Logout";
+        formNode.classList.remove("hidden");
+	    formNode.querySelector("input[name=projectId]").value = projectId;
     }
 }
-
-const newCommentForm = new NewCommentForm();
 
 /** Attach click handlers to all show comments buttons. */
 function getCommentButtonClickHandler (newCommentCount){
@@ -105,12 +114,29 @@ function getCommentButtonClickHandler (newCommentCount){
         /** Make current comment button selected, and reload comments. */
         e.currentTarget.classList.add("selected");
         commentsCount = newCommentCount;
-        Comment.loadAll(projectId, commentsCount);
+        Comment.loadAll(projectId, commentsCount, languageCode);
     }
 }
 document.querySelector("#show-5").addEventListener("click", getCommentButtonClickHandler(5));
 document.querySelector("#show-15").addEventListener("click", getCommentButtonClickHandler(15));
 document.querySelector("#show-all").addEventListener("click", getCommentButtonClickHandler(undefined));
 
-Comment.loadAll(projectId, commentsCount);
+/** Add language options. */
+const languageSelectNode = document.querySelector("#set-language");
+for(let language of languages) {
+    const {name, code} = language;
+    const optionNode = document.createElement("option");
+    optionNode.innerHTML = name;
+    optionNode.value = code;
+    optionNode.selected = code === languageCode;
+    languageSelectNode.appendChild(optionNode);
+}
+languageSelectNode.addEventListener("change", e => {
+    languageCode = e.currentTarget.value;
+    Comment.loadAll(projectId, commentsCount, languageCode);
+});
+
+Comment.loadAll(projectId, commentsCount, languageCode);
+initializeCommentForm();
 populateDetails();
+
