@@ -1,5 +1,3 @@
-import projectsObject from "./projects-object.js";
-
 import {Comment} from "./comments.js";
 
 import languages from "./languages.js";
@@ -24,27 +22,59 @@ let commentsCount = 5;
  */
 let languageCode = "en";
 
-/**
- * All data about the current project.
- * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
- */
-const project = projectsObject[projectId];
+/** Load data about this project from the server and populate UI items. */
+async function populateDetails() {
+    const response = await fetch(`/projects?projectId=${projectId}`);
+    /**
+    * All data about the current project.
+    * @type {{id: string, name: string, description: string, detail: string[], tags: string[]}}
+    */
+    const project = await response.json();
 
-console.assert(project !== undefined);
+    console.assert(project !== undefined);
+
+    /** Fill in information for this project. */
+    document.querySelector("#name").innerHTML = project.name;
+    document.querySelector("#description").innerHTML = project.description;
+
+    /** A bullet-list of details about this project. */
+    const detailListNode = document.querySelector("#detail");
+
+    /** Create a new list element (detail) for each detail in the project. */
+    for(let detail of project.details){
+        const detailNode = document.createElement("li");
+        detailNode.innerHTML = detail;
+        detailListNode.appendChild(detailNode);
+    }
+
+  /** Similar to the list of details, create a list of links but only if present. */
+  const linkSectionNode = document.querySelector("#project-links");
+  if (project.links && project.links.length > 0) {
+      linkSectionNode.classList.remove("hidden");
+
+      const linkListNode = linkSectionNode.querySelector("#links");
 
 /** Fill in information for this project, using CDN loaded XSS prevention library.*/
 document.querySelector("#name").innerHTML = window.DOMPurify.sanitize(project.name, {ALLOWED_TAGS: []});
 document.querySelector("#description").innerHTML = window.DOMPurify.sanitize(project.description, {ALLOWED_TAGS: []});
 
-/** A bullet-list of details about this project. */
-const detailListNode = document.querySelector("#detail");
+      for(let link of project.links){
+          const {name, href} = link;
 
-/** Create a new list element (detail) for each detail in the project. */
-for(let detail of project.detail){
-    const detailNode = document.createElement("li");
-    detailNode.innerHTML = detail;
-    detailListNode.appendChild(detailNode);
-}
+          /** Create link element. */
+          const linkNode = document.createElement("a");
+          linkNode.href = href;
+          linkNode.innerHTML = name;
+
+          /** Add link to UI. */
+          const listElementNode = document.createElement("li");
+          listElementNode.appendChild(linkNode);
+          linkListNode.appendChild(listElementNode);
+      }
+  } else{
+      linkSectionNode.classList.add("hidden");
+  }
+  }
 
 document.querySelector("#delete-comments").addEventListener("click", async () => {
     await Comment.deleteAll(projectId);
@@ -106,5 +136,7 @@ languageSelectNode.addEventListener("change", e => {
     Comment.loadAll(projectId, commentsCount, languageCode);
 });
 
- Comment.loadAll(projectId, commentsCount, languageCode);
- initializeCommentForm();
+Comment.loadAll(projectId, commentsCount, languageCode);
+initializeCommentForm();
+populateDetails();
+
