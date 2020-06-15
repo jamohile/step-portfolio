@@ -22,6 +22,10 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Determines potential meeting times based on a set of pre-existing events
+ * and mandatory/optional attendees who must be present.
+ */
 public final class FindMeetingQuery {
   /** Used to sort events by start time. */
   public static final Comparator<Event> EVENT_COMPARATOR = new Comparator<Event>() {
@@ -32,11 +36,14 @@ public final class FindMeetingQuery {
     }
   };
 
+  /** Finds potential meeting times */
   public Collection<TimeRange> query(
     Collection<Event> events,
     MeetingRequest request
   ) {
+    // Potential windows that only include mandatory attendees.
     ArrayList<TimeRange> timeSlots = new ArrayList<>();
+    // Potential windows that include ALL mandatory + optional attendees.
     ArrayList<TimeRange> timeSlotsWithOptional = new ArrayList<>();
 
     ArrayList<Event> sortedEvents = new ArrayList<>(events);
@@ -57,19 +64,23 @@ public final class FindMeetingQuery {
     int mandatoryBlockExtent = TimeRange.START_OF_DAY; // Based on people who *must* attend
     int optionalBlockExtent = TimeRange.START_OF_DAY; // Based on people who *may* attend
 
+    // Whether any events exist for mandatory and optional attendees respectively.
     boolean hasMandatoryEvents = false;
     boolean hasOptionalEvents = false;
 
+    // Whether we should consider attendees of a given class.
+    // This is used to handle cases like all optional no mandatory, no attendees, etc.
     boolean considerMandatoryAttendees = request.getAttendees().size() > 0;
     boolean considerOptionalAttendees = request.getOptionalAttendees().size() > 0;
 
     for (Event event : sortedEvents) {
       TimeRange when = event.getWhen();
-      /** If true, this event can't be ignored. */
+      // If true, the meeting request cannot overlap with this.
       boolean containsMandatoryAttendees = anyAttendeesAreMandatory(
         event,
         request
       );
+      // If true, meeting requests that try to include optional attendees cannot overlap with this.
       boolean containsOptionalAttendees = anyAttendeesAreOptional(
         event,
         request
@@ -82,65 +93,73 @@ public final class FindMeetingQuery {
         hasOptionalEvents = true;
       }
 
+      // As mentioned above, we track 'mandatory' people and 'optional' people as two classes.
+      // For a given class, a window exists if there is time between current event involving that class, 
+      // And the end of the last event involving that class (_____BlockExtent)
       boolean optionalWindowExists = when.start() > optionalBlockExtent;
       boolean mandatoryWindowExists = when.start() > mandatoryBlockExtent;
 
+      // Makes sure the requested meeting length fits within the window.
       boolean optionalWindowLongEnough = optionalWindowExists && windowIsLongEnough(optionalBlockExtent, when.start(), request);
       boolean mandatoryWindowLongEnough = mandatoryWindowExists && windowIsLongEnough(mandatoryBlockExtent, when.start(), request);
 
-      if (considerOptionalAttendees && optionalWindowExists) { // This is a potential window.
-        if (optionalWindowLongEnough && mandatoryWindowLongEnough) {
-          timeSlotsWithOptional.add(
-            /* Add non-inclusive window because it can't overlap with the start of this event. */
-            TimeRange.fromStartEnd(
-              Math.max(optionalBlockExtent, mandatoryBlockExtent),
-              when.start(), false)
-          );
-        }
+      // Optional-based windows must also include all mandatory attendees.
+      if (considerOptionalAttendees && optionalWindowLongEnough && mandatoryWindowLongEnough) {
+        timeSlotsWithOptional.add(
+          /* Add non-inclusive window because it can't overlap with the start of this event. */
+          TimeRange.fromStartEnd(
+            Math.max(optionalBlockExtent, mandatoryBlockExtent), // Only use overlap between optional/mandatory availability.
+            when.start(), false)
+        );
       }
       
 
-      if (containsMandatoryAttendees && mandatoryWindowExists) { // This is a potential window.
-        if (mandatoryWindowLongEnough) {
-          timeSlots.add(
-            /* Add non-inclusive window because it can't overlap with the start of this event. */
-            TimeRange.fromStartEnd(mandatoryBlockExtent, when.start(), false)
-          );
-        }
+      if (containsMandatoryAttendees && mandatoryWindowLongEnough) {
+        timeSlots.add(
+          /* Add non-inclusive window because it can't overlap with the start of this event. */
+          TimeRange.fromStartEnd(mandatoryBlockExtent, when.start(), false)
+        );
       }
 
+      // If this window contains members from a certain class, update their respective block extent.
       if (containsOptionalAttendees) { // We group all optional attendees as one lump for now.
         optionalBlockExtent = Math.max(optionalBlockExtent, when.end());
       }
-      
       if (containsMandatoryAttendees) {
         mandatoryBlockExtent = Math.max(mandatoryBlockExtent, when.end());
       }
     }
 
-    /* At this point there are no more events, so remaining must be a potential window. */
+    // At this point there are no more events, so remaining might be a contiguous potential window.
     boolean potentialMandatoryWindowExists = windowIsLongEnough(mandatoryBlockExtent, TimeRange.END_OF_DAY, request);
+    // It is only acceptable for the extent to still be 0 IF there are no events that could move that extent.
     boolean remainingMandatoryExtentAcceptable = mandatoryBlockExtent > 0 || hasMandatoryEvents == false;
 
+    // Same as above, for optional.
     boolean potentialOptionalWindowExists = windowIsLongEnough(optionalBlockExtent, TimeRange.END_OF_DAY, request);
     boolean remainingOptionalExtentAcceptable = optionalBlockExtent > 0 || hasOptionalEvents == false;
 
+    // This could be a mandatory-window.
     if (potentialMandatoryWindowExists && remainingMandatoryExtentAcceptable) {
-      if (considerMandatoryAttendees || (!considerMandatoryAttendees && !considerOptionalAttendees)) {
+      // Per test FindMeetingQueryTest.optionsForNoAttendees, having no attendees should still return availability.
+      boolean noAttendeesToConsider = !considerMandatoryAttendees && !considerOptionalAttendees;
+      if (considerMandatoryAttendees || noAttendeesToConsider) {
         timeSlots.add(
           TimeRange.fromStartEnd(mandatoryBlockExtent, TimeRange.END_OF_DAY, true)
         );
       }
+      // As above, we can only consider the optional window IF the mandatory window also exists.
       if (considerOptionalAttendees && potentialOptionalWindowExists && remainingOptionalExtentAcceptable) {
         timeSlotsWithOptional.add(
           TimeRange.fromStartEnd(
-            Math.max(mandatoryBlockExtent, optionalBlockExtent), 
+            Math.max(mandatoryBlockExtent, optionalBlockExtent), // Only use the overlap between optional/mandatory availability.
             TimeRange.END_OF_DAY, true
           )
         );
       }
     }
 
+    // If possible, return the windows that include all optional. Otherwise, just return mandatory.
     return timeSlotsWithOptional.size() > 0 ? timeSlotsWithOptional : timeSlots;
   }
 
