@@ -57,8 +57,8 @@ public final class FindMeetingQuery {
     int mandatoryBlockExtent = TimeRange.START_OF_DAY; // Based on people who *must* attend
     int optionalBlockExtent = TimeRange.START_OF_DAY; // Based on people who *may* attend
 
-    int numMandatoryEvents = 0;
-    int numOptionalEvents = 0;
+    boolean hasMandatoryEvents = false;
+    boolean hasOptionalEvents = false;
 
     boolean considerMandatoryAttendees = request.getAttendees().size() > 0;
     boolean considerOptionalAttendees = request.getOptionalAttendees().size() > 0;
@@ -75,8 +75,12 @@ public final class FindMeetingQuery {
         request
       );
 
-      if (containsMandatoryAttendees) { numMandatoryEvents++; }
-      if (containsOptionalAttendees) { numOptionalEvents++; }
+      if (containsMandatoryAttendees) {
+        hasMandatoryEvents = true;
+      }
+      if (containsOptionalAttendees) {
+        hasOptionalEvents = true;
+      }
 
       boolean optionalWindowExists = when.start() > optionalBlockExtent;
       boolean mandatoryWindowExists = when.start() > mandatoryBlockExtent;
@@ -115,13 +119,19 @@ public final class FindMeetingQuery {
     }
 
     /* At this point there are no more events, so remaining must be a potential window. */
-    if (windowIsLongEnough(mandatoryBlockExtent, TimeRange.END_OF_DAY, request) && (numMandatoryEvents == 0 || mandatoryBlockExtent != 0)) {
+    boolean potentialMandatoryWindowExists = windowIsLongEnough(mandatoryBlockExtent, TimeRange.END_OF_DAY, request);
+    boolean remainingMandatoryExtentAcceptable = mandatoryBlockExtent > 0 || hasMandatoryEvents == false;
+
+    boolean potentialOptionalWindowExists = windowIsLongEnough(optionalBlockExtent, TimeRange.END_OF_DAY, request);
+    boolean remainingOptionalExtentAcceptable = optionalBlockExtent > 0 || hasOptionalEvents == false;
+
+    if (potentialMandatoryWindowExists && remainingMandatoryExtentAcceptable) {
       if (considerMandatoryAttendees || (!considerMandatoryAttendees && !considerOptionalAttendees)) {
         timeSlots.add(
           TimeRange.fromStartEnd(mandatoryBlockExtent, TimeRange.END_OF_DAY, true)
         );
       }
-      if (considerOptionalAttendees && windowIsLongEnough(optionalBlockExtent, TimeRange.END_OF_DAY, request) && (numOptionalEvents == 0 || optionalBlockExtent != 0)) {
+      if (considerOptionalAttendees && potentialOptionalWindowExists && remainingOptionalExtentAcceptable) {
         timeSlotsWithOptional.add(
           TimeRange.fromStartEnd(
             Math.max(mandatoryBlockExtent, optionalBlockExtent), 
