@@ -75,12 +75,12 @@ public final class FindMeetingQuery {
      * |______________________||______|
      *        block              window
      *
-     * We iterate shifts to identify the right-most extent of a block.
+     * We iterate shifts to identify the right-most end of a block.
      * If we find a shift that start *after* this point, the difference is a window.
      * That window is a possible meeting spot, if long enough.
      */
-    int mandatoryBlockExtent = TimeRange.START_OF_DAY; // Based on people who *must* attend
-    int optionalBlockExtent = TimeRange.START_OF_DAY; // Based on people who *may* attend
+    int mandatoryBlockEnd = TimeRange.START_OF_DAY; // Based on people who *must* attend
+    int optionalBlockEnd = TimeRange.START_OF_DAY; // Based on people who *may* attend
 
     // Whether we should consider attendees of a given class.
     // This is used to handle cases like all optional no mandatory, no attendees, etc.
@@ -106,20 +106,20 @@ public final class FindMeetingQuery {
 
       // As mentioned above, we track 'mandatory' people and 'optional' people as two classes.
       // For a given class, a window exists if there is time between current event involving that class, 
-      // And the end of the last event involving that class (_____BlockExtent)
-      boolean optionalWindowExists = when.start() > optionalBlockExtent;
-      boolean mandatoryWindowExists = when.start() > mandatoryBlockExtent;
+      // And the end of the last event involving that class (_____BlockEnd)
+      boolean optionalWindowExists = when.start() > optionalBlockEnd;
+      boolean mandatoryWindowExists = when.start() > mandatoryBlockEnd;
 
       // Makes sure the requested meeting length fits within the window.
-      boolean optionalWindowLongEnough = optionalWindowExists && windowIsLongEnough(optionalBlockExtent, when.start(), request);
-      boolean mandatoryWindowLongEnough = mandatoryWindowExists && windowIsLongEnough(mandatoryBlockExtent, when.start(), request);
+      boolean optionalWindowLongEnough = optionalWindowExists && windowIsLongEnough(optionalBlockEnd, when.start(), request);
+      boolean mandatoryWindowLongEnough = mandatoryWindowExists && windowIsLongEnough(mandatoryBlockEnd, when.start(), request);
 
       // Optional-based windows must also include all mandatory attendees.
       if (considerOptionalAttendees && optionalWindowLongEnough && mandatoryWindowLongEnough) {
         timeSlotsWithOptional.add(
           /* Add non-inclusive window because it can't overlap with the start of this event. */
           TimeRange.fromStartEnd(
-            Math.max(optionalBlockExtent, mandatoryBlockExtent), // Only use overlap between optional/mandatory availability.
+            Math.max(optionalBlockEnd, mandatoryBlockEnd), // Only use overlap between optional/mandatory availability.
             when.start(), false)
         );
       }
@@ -128,16 +128,16 @@ public final class FindMeetingQuery {
       if (containsMandatoryAttendees && mandatoryWindowLongEnough) {
         timeSlots.add(
           /* Add non-inclusive window because it can't overlap with the start of this event. */
-          TimeRange.fromStartEnd(mandatoryBlockExtent, when.start(), false)
+          TimeRange.fromStartEnd(mandatoryBlockEnd, when.start(), false)
         );
       }
 
-      // If this window contains members from a certain class, update their respective block extent.
+      // If this window contains members from a certain class, update their respective block End.
       if (containsOptionalAttendees) { // We group all optional attendees as one lump for now.
-        optionalBlockExtent = Math.max(optionalBlockExtent, when.end());
+        optionalBlockEnd = Math.max(optionalBlockEnd, when.end());
       }
       if (containsMandatoryAttendees) {
-        mandatoryBlockExtent = Math.max(mandatoryBlockExtent, when.end());
+        mandatoryBlockEnd = Math.max(mandatoryBlockEnd, when.end());
       }
     }
     // If possible, return the windows that include all optional. Otherwise, just return mandatory.
